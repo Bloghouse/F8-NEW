@@ -1,0 +1,25 @@
+---
+/**
+ * Listagem de todos os posts do blog
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import PostCard from '../../components/PostCard.astro';
+import config from '../../config';
+---
+
+<BaseLayout title={`Blog | ${config.siteName}`} description={config.siteDescription}>
+  <main class="max-w-4xl mx-auto px-4 py-12">
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-8">
+      Blog
+    </h1>
+    <div class="grid gap-8 md:grid-cols-2">
+      {(await getCollection('posts'))
+        .filter((p) => !p.data.draft)
+        .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+        .map((post) => (
+          <PostCard post={post} />
+        ))}
+    </div>
+  </main>
+</BaseLayout>

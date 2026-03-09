@@ -1,0 +1,37 @@
+---
+/**
+ * PostCard.astro
+ * Card de preview de post para listagem do blog
+ * Aceita o objeto post da Content Collection
+ */
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  post: CollectionEntry<'posts'>;
+}
+
+const { post } = Astro.props;
+const { title, description, pubDate, image } = post.data;
+const slug = post.slug;
+const formattedDate = pubDate?.toLocaleDateString('pt-BR', {
+  day: '2-digit',
+  month: 'long',
+  year: 'numeric',
+});
+---
+
+<article class="post-card">
+  {image && (
+    <a href={`/blog/${slug}/`} class="post-card-image">
+      <img src={image} alt={title} />
+    </a>
+  )}
+  <div class="post-card-content">
+    <time datetime={pubDate.toISOString()}>{formattedDate}</time>
+    <h2>
+      <a href={`/blog/${slug}/`}>{title}</a>
+    </h2>
+    {description && <p>{description}</p>}
+    <a href={`/blog/${slug}/`} class="read-more">Ler mais →</a>
+  </div>
+</article>

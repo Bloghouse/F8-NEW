@@ -1,0 +1,48 @@
+---
+/**
+ * Página individual de cada post
+ * Rota dinâmica para /blog/slug-do-post
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import config from '../../config';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts');
+  return posts
+    .filter((p) => !p.data.draft)
+    .map((post) => ({
+      params: { slug: post.slug || post.id.replace('posts/', '').replace(/\.md$/, '') },
+      props: { post },
+    }));
+}
+
+const { post } = Astro.props;
+const { Content } = await post.render();
+---
+
+<BaseLayout
+  title={`${post.data.title} | ${config.siteName}`}
+  description={post.data.description || post.data.title}
+>
+  <main class="max-w-3xl mx-auto px-4 py-12">
+    <article class="prose prose-lg dark:prose-invert max-w-none">
+      <header class="mb-8">
+        <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+          {post.data.title}
+        </h1>
+        <time
+          datetime={post.data.pubDate.toISOString()}
+          class="text-gray-500 dark:text-gray-400"
+        >
+          {post.data.pubDate.toLocaleDateString('pt-BR', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric',
+          })}
+        </time>
+      </header>
+      <Content />
+    </article>
+  </main>
+</BaseLayout>

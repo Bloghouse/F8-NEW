@@ -1,0 +1,26 @@
+---
+/**
+ * Página Sobre - essencial para sites PBN de qualidade
+ * Personalize o conteúdo em src/config.ts
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import config from '../config';
+---
+
+<BaseLayout title={`Sobre | ${config.siteName}`} description={config.aboutDescription}>
+  <main class="max-w-3xl mx-auto px-4 py-12">
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-8">
+      Sobre
+    </h1>
+    <div class="prose prose-lg dark:prose-invert max-w-none">
+      <p>
+        {config.aboutDescription}
+      </p>
+      <p>
+        Este site faz parte da rede 8links e publica conteúdo de qualidade
+        nas áreas de {config.primaryNiche}
+        {config.secondaryNiche ? ` e ${config.secondaryNiche}` : ''}.
+      </p>
+    </div>
+  </main>
+</BaseLayout>

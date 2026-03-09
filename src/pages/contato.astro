@@ -1,0 +1,26 @@
+---
+/**
+ * Página de Contato - essencial para sites PBN de qualidade
+ * Adicione formulário ou informações de contato
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import config from '../config';
+---
+
+<BaseLayout title={`Contato | ${config.siteName}`} description="Entre em contato conosco">
+  <main class="max-w-3xl mx-auto px-4 py-12">
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-8">
+      Contato
+    </h1>
+    <div class="prose prose-lg dark:prose-invert max-w-none">
+      <p>
+        Entre em contato conosco. Estamos à disposição para responder suas dúvidas.
+      </p>
+      {config.contactEmail && (
+        <p>
+          E-mail: <a href={`mailto:${config.contactEmail}`}>{config.contactEmail}</a>
+        </p>
+      )}
+    </div>
+  </main>
+</BaseLayout>

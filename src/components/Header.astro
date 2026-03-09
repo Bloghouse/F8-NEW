@@ -1,0 +1,18 @@
+---
+/**
+ * Header.astro
+ * Cabeçalho do site com logo e navegação
+ * Edite os links conforme as páginas do seu site
+ */
+import { SITE_CONFIG } from '../config';
+---
+
+<header class="header">
+  <a href="/" class="logo">{SITE_CONFIG.name}</a>
+  <nav class="nav">
+    <a href="/">Início</a>
+    <a href="/blog/">Blog</a>
+    <a href="/sobre/">Sobre</a>
+    <a href="/contato/">Contato</a>
+  </nav>
+</header>
