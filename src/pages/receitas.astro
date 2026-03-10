@@ -1,0 +1,55 @@
+---
+/**
+ * Página Receitas - baseada em public/reference/recipes.html/
+ * Grid de receitas do template Melanie Hanson
+ * Imagens: /reference/recipes.html/images/
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { siteConfig } from '../config';
+
+const recipes = [
+  { title: 'Lentilhas Guisadas com Frango ao Cominho', cat: 'Receitas' },
+  { title: 'Curry de Batata Doce, Brócolis, Tofu e Castanha de Caju', cat: 'Receitas' },
+  { title: 'Cogumelos Assados com Espinafre e Ricota', cat: 'Receitas' },
+];
+---
+
+<BaseLayout
+  title={`Receitas | ${siteConfig.siteName}`}
+  description="Receitas saudáveis e deliciosas para um estilo de vida equilibrado."
+>
+  <article class="receitas-page">
+    <section class="py-20 px-6 bg-white text-gray-800">
+      <div class="max-w-4xl mx-auto text-center">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">Receitas</h1>
+        <nav class="text-sm text-gray-500">
+          <a href="/" class="text-[#efa758] hover:underline">Início</a>
+          <span class="mx-2">/</span>
+          <span>Receitas</span>
+        </nav>
+      </div>
+    </section>
+
+    <section class="py-12 px-6">
+      <div class="max-w-4xl mx-auto space-y-12">
+        {recipes.map((r) => (
+          <article class="flex flex-col md:flex-row gap-8 p-6 rounded-xl border border-gray-200 hover:shadow-lg transition">
+            <div class="md:w-1/3 aspect-video bg-gray-200 rounded-lg flex-shrink-0" />
+            <div class="flex-1">
+              <h2 class="text-2xl font-bold mb-2">
+                <a href="/blog" class="hover:text-[#efa758]">{r.title}</a>
+              </h2>
+              <p class="text-gray-500 text-sm mb-4">{r.cat} • 22 de março de 2016 • por Melanie Hanson</p>
+              <p class="text-gray-600 mb-4">Phasellus at eros non sapien aliquet volutpat. In viverra odio aliquam, dictum tortor a, commodo turpis. Quisque fermentum urna nec est ultricies faucibus.</p>
+              <a href="/blog" class="text-[#efa758] font-semibold hover:underline">Leia mais</a>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <nav class="py-8 px-6 text-center">
+      <a href="/" class="text-[#efa758] hover:underline">← Voltar ao Início</a>
+    </nav>
+  </article>
+</BaseLayout>

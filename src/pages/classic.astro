@@ -1,0 +1,59 @@
+---
+/**
+ * Página Classic (Blog 1 coluna) - baseada em public/reference/classic-1-column.html/
+ * Layout clássico de blog do template Melanie Hanson
+ * Imagens: /reference/classic-1-column.html/images/
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { siteConfig } from '../config';
+
+const IMG = (f: string) => `/reference/classic-1-column.html/images/${f}`;
+
+const posts = [
+  { title: 'Como Usar um Bullet Journal para Saúde e Bem-estar', img: 'img-002.jpg', date: '14 de setembro de 2016' },
+  { title: 'Como Ter Confiança no Corpo no Verão', img: 'img-003.jpg', date: '14 de setembro de 2016' },
+  { title: 'Por Que Você Deveria Parar de se Recompensar... Com Comida', date: '14 de setembro de 2016' },
+];
+---
+
+<BaseLayout
+  title={`Blog | ${siteConfig.siteName}`}
+  description="Artigos sobre saúde, bem-estar e estilo de vida saudável."
+>
+  <article class="classic-page">
+    <section class="py-20 px-6 bg-white text-gray-800">
+      <div class="max-w-4xl mx-auto text-center">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">Blog Clássico</h1>
+        <nav class="text-sm text-gray-500">
+          <a href="/" class="text-[#efa758] hover:underline">Início</a>
+          <span class="mx-2">/</span>
+          <span>Blog</span>
+        </nav>
+      </div>
+    </section>
+
+    <section class="py-12 px-6">
+      <div class="max-w-3xl mx-auto space-y-16">
+        {posts.map((p) => (
+          <article>
+            {p.img && (
+              <a href="/blog" class="block mb-6">
+                <img src={IMG(p.img)} alt="" class="w-full aspect-[16/9] object-cover rounded-lg" />
+              </a>
+            )}
+            <h2 class="text-2xl font-bold mb-4">
+              <a href="/blog" class="hover:text-[#efa758]">{p.title}</a>
+            </h2>
+            <p class="text-gray-500 text-sm mb-4">{p.date} • por Melanie Hanson</p>
+            <p class="text-gray-600 mb-4">Lorem ipsum dolor sit amet, sit at elit nostrum verterem, quod tale propriae eu sit. Vel epicurei reformidans ea. Liber eirmod adversarium cu vix.</p>
+            <a href="/blog" class="text-[#efa758] font-semibold hover:underline">Leia mais</a>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <nav class="py-8 px-6 text-center">
+      <a href="/" class="text-[#efa758] hover:underline">← Voltar ao Início</a>
+    </nav>
+  </article>
+</BaseLayout>

@@ -1,50 +1,979 @@
 ---
 /**
- * Homepage - tema Mivon Creative Agency (baseado em referência extraída)
- * Hero, Intro, Stats, Services, Portfolio, Team, Testimonials, Contact CTA
+ * Central de Criação de Sites - hub + wizard
+ * Hub: Novo site, Meus sites (com Deploy por site)
+ * Wizard: 3 etapas (Capturar → Briefing → Prompts)
  */
-import BaseLayout from '../layouts/BaseLayout.astro';
-import Hero from '../components/Hero.astro';
-import IntroSection from '../components/IntroSection.astro';
-import StatsSection from '../components/StatsSection.astro';
-import ServicesSection from '../components/ServicesSection.astro';
-import PortfolioSection from '../components/PortfolioSection.astro';
-import TeamSection from '../components/TeamSection.astro';
-import TestimonialSection from '../components/TestimonialSection.astro';
-import ContactSection from '../components/ContactSection.astro';
-import { siteConfig } from '../config';
+import WizardLayout from '../layouts/WizardLayout.astro';
 ---
 
-<BaseLayout title={siteConfig.siteName} description={siteConfig.siteDescription}>
-  <Hero />
-  <IntroSection />
-  <StatsSection />
-  <ServicesSection />
-  <PortfolioSection />
-  <TeamSection />
-  <TestimonialSection />
-  <ContactSection />
+<WizardLayout>
+  <div class="max-w-4xl mx-auto px-4 py-10">
+    <!-- HUB: Central - Meus sites + Novo site -->
+    <section id="hub-section" class="hub-view">
+      <h1 class="text-2xl font-bold text-white mb-1">Central de Criação de Sites</h1>
+      <p id="api-status" class="text-white/50 text-sm mb-2">Verificando API...</p>
+      <p class="text-white/50 text-sm mb-8">Gerencie seus projetos e inicie novos sites a partir de referências.</p>
 
-  <a href="#" id="scroll-top" class="fixed bottom-8 right-8 w-12 h-12 flex items-center justify-center rounded-full bg-white/10 border border-white/30 text-white hover:bg-white hover:text-dark-900 transition-colors opacity-0 pointer-events-none z-50" aria-label="Voltar ao topo">
-    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
-    </svg>
-  </a>
+      <div class="space-y-8">
+        <div>
+          <h2 class="text-lg font-semibold text-white mb-4">Novo site</h2>
+          <form id="new-project-form" class="space-y-4 max-w-md">
+            <div>
+              <label for="project-name" class="block text-sm font-medium text-white/80 mb-2">Nome do projeto</label>
+              <input type="text" id="project-name" placeholder="ex: meu-site-medico" required
+                class="w-full px-4 py-3 rounded-xl bg-[var(--color-bg-elevated)] border border-[var(--color-border)] text-white placeholder-white/40 focus:ring-2 focus:ring-[var(--color-accent)]" />
+              <p class="text-white/40 text-xs mt-1">Use letras, números e hífens. Será o slug do site.</p>
+            </div>
+            <button type="submit" class="px-6 py-3 rounded-xl bg-[var(--color-accent)] text-[#0a0a0a] font-semibold hover:bg-[var(--color-accent-hover)] transition-colors">
+              Iniciar criação
+            </button>
+          </form>
+        </div>
 
-  <script>
-    const scrollBtn = document.getElementById('scroll-top');
-    if (scrollBtn) {
-      window.addEventListener('scroll', () => {
-        if (window.scrollY > 400) {
-          scrollBtn.classList.remove('opacity-0', 'pointer-events-none');
-        } else {
-          scrollBtn.classList.add('opacity-0', 'pointer-events-none');
-        }
+        <div>
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <h2 class="text-lg font-semibold text-white">Meus sites</h2>
+            <div class="flex flex-wrap items-center gap-2">
+              <input type="search" id="sites-search" placeholder="Buscar por nome..." class="px-3 py-2 rounded-lg bg-[var(--color-bg-elevated)] border border-[var(--color-border)] text-white text-sm placeholder-white/40 focus:ring-1 focus:ring-[var(--color-accent)] w-44" />
+              <select id="sites-sort" class="px-3 py-2 rounded-lg bg-[var(--color-bg-elevated)] border border-[var(--color-border)] text-white text-sm focus:ring-1 focus:ring-[var(--color-accent)]">
+                <option value="recent">Mais recentes</option>
+                <option value="oldest">Mais antigos</option>
+                <option value="name-asc">Nome A–Z</option>
+                <option value="name-desc">Nome Z–A</option>
+                <option value="deploy">Com deploy</option>
+                <option value="no-deploy">Sem deploy</option>
+              </select>
+              <button type="button" id="refresh-sites-btn" class="px-3 py-2 rounded-lg text-sm text-white/60 hover:text-white hover:bg-white/5 transition-colors">↻ Atualizar</button>
+            </div>
+          </div>
+          <div id="sites-list" class="space-y-3 min-h-[120px]">
+            <p class="text-white/40 text-sm">Carregando...</p>
+          </div>
+          <div id="git-toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[200] px-4 py-3 rounded-lg text-sm font-medium shadow-xl max-w-md pointer-events-none opacity-0 transition-opacity duration-300" role="alert" aria-live="assertive"></div>
+          <p id="sites-count" class="text-white/40 text-xs mt-2 hidden"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Modal Configurações (Credenciais Git + Vercel) -->
+    <div id="config-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+      <div class="bg-[var(--color-bg-elevated)] border border-[var(--color-border)] rounded-2xl max-w-lg w-full p-6 shadow-xl">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-lg font-semibold text-white">⚙ Configurações — Credenciais</h2>
+          <button type="button" id="close-config-btn" class="text-white/50 hover:text-white text-2xl leading-none">&times;</button>
+        </div>
+        <p class="text-white/50 text-sm mb-6">Configure o token do GitHub para criar repositórios e fazer push. O deploy na Vercel é feito manualmente pelo link em cada site. Credenciais salvas em <code class="text-xs">data/credentials.json</code> (não commitado).</p>
+        <form id="config-form" class="space-y-6">
+          <div>
+            <label class="block text-sm font-medium text-white/80 mb-2">GitHub — Personal Access Token</label>
+            <input type="password" id="config-github-token" placeholder="ghp_xxxxxxxxxxxx" autocomplete="off"
+              class="w-full px-4 py-3 rounded-xl bg-[var(--color-bg)] border border-[var(--color-border)] text-white placeholder-white/30 focus:ring-2 focus:ring-[var(--color-accent)] font-mono text-sm" />
+            <p class="text-white/40 text-xs mt-1.5">Crie em: GitHub → Settings → Developer settings → Personal access tokens. Escopo: <code>repo</code></p>
+            <p id="config-github-status" class="text-xs mt-1 hidden"></p>
+          </div>
+          <div class="flex gap-3 pt-2">
+            <button type="submit" class="px-6 py-3 rounded-xl bg-[var(--color-accent)] text-[#0a0a0a] font-semibold hover:bg-[var(--color-accent-hover)]">
+              Salvar credenciais
+            </button>
+            <button type="button" id="cancel-config-btn" class="px-6 py-3 rounded-xl border border-[var(--color-border)] text-white/70 hover:bg-white/5">
+              Cancelar
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- WIZARD: 6 etapas (visível após informar nome) -->
+    <div id="wizard-section" class="wizard-view hidden">
+      <div class="flex items-center justify-between mb-6">
+        <p class="text-sm text-white/60">Projeto: <strong id="current-project-name" class="text-white"></strong></p>
+        <button type="button" id="back-to-hub" class="text-sm text-white/60 hover:text-white transition-colors">← Voltar ao hub</button>
+      </div>
+    <!-- Tabs -->
+    <nav class="flex flex-wrap gap-1 p-1 rounded-xl bg-[var(--color-bg-elevated)] border border-[var(--color-border)] w-fit mb-10">
+      <button type="button" data-step="1" class="wizard-tab px-4 py-2.5 rounded-lg text-xs font-medium transition-all" aria-current="step">1. Capturar</button>
+      <button type="button" data-step="2" class="wizard-tab px-4 py-2.5 rounded-lg text-xs font-medium transition-all opacity-60">2. Briefing</button>
+      <button type="button" data-step="3" class="wizard-tab px-4 py-2.5 rounded-lg text-xs font-medium transition-all opacity-60">3. Prompts</button>
+    </nav>
+
+    <!-- ETAPA 1: Capturar -->
+    <section id="step-1" class="wizard-step">
+      <h1 class="text-2xl font-bold text-white mb-1">Capturar referências</h1>
+      <p class="text-white/50 text-sm mb-6">URLs das demos. Captura screenshots, HTML, CSS e imagens automaticamente.</p>
+      <div class="space-y-4">
+        <textarea
+          id="urls-input"
+          rows="5"
+          placeholder="https://7oroof.com/demos/medcity/&#10;https://7oroof.com/demos/medcity/about-us.html"
+          class="w-full px-4 py-3 rounded-xl bg-[var(--color-bg-elevated)] border border-[var(--color-border)] text-white placeholder-white/30 focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent font-mono text-sm resize-none"
+        ></textarea>
+        <div class="flex items-center gap-4">
+          <button type="button" id="capture-btn" class="px-6 py-3 rounded-xl bg-[var(--color-accent)] text-[#0a0a0a] font-semibold hover:bg-[var(--color-accent-hover)] transition-colors disabled:opacity-50">
+            Capturar
+          </button>
+        </div>
+        <div id="capture-progress" class="hidden mt-4 space-y-3">
+          <div class="flex justify-between text-sm text-white/60">
+            <span id="capture-status">Iniciando...</span>
+            <span id="capture-count">0/0</span>
+          </div>
+          <div class="h-2 rounded-full bg-[var(--color-bg-elevated)] overflow-hidden">
+            <div id="capture-progress-bar" class="h-full bg-[var(--color-accent)] transition-all duration-300" style="width: 0%"></div>
+          </div>
+          <div id="capture-log" class="space-y-1 text-xs font-mono text-white/50 max-h-32 overflow-y-auto"></div>
+        </div>
+        <p id="capture-error" class="text-sm text-red-400 hidden mt-2"></p>
+      </div>
+      <div id="capture-result" class="mt-6 hidden">
+        <div class="flex items-center gap-3 p-4 rounded-xl bg-[var(--color-accent)]/10 border border-[var(--color-accent)]/30">
+          <span class="text-[var(--color-accent)] text-lg">✓</span>
+          <span class="text-white/90">Páginas capturadas. Imagens incluídas.</span>
+        </div>
+        <button type="button" id="go-step-2" class="mt-4 px-6 py-3 rounded-xl bg-[var(--color-accent)] text-[#0a0a0a] font-semibold hover:bg-[var(--color-accent-hover)] transition-colors">
+          Próximo: Briefing →
+        </button>
+      </div>
+    </section>
+
+    <!-- ETAPA 2: Briefing -->
+    <section id="step-2" class="wizard-step hidden">
+      <h1 class="text-2xl font-bold text-white mb-1">Briefing</h1>
+      <p class="text-white/50 text-sm mb-6">Como adaptar a referência ao seu projeto.</p>
+
+      <div class="space-y-6 mb-8">
+        <fieldset class="p-5 rounded-xl bg-[var(--color-bg-elevated)] border border-[var(--color-border)]">
+          <legend class="text-sm font-medium text-white/90 mb-4">Replicar 100% do template</legend>
+          <div class="grid sm:grid-cols-2 gap-3">
+            <label class="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-white/5">
+              <input type="checkbox" name="briefing-opt" value="manter-traduzir" class="rounded accent-[var(--color-accent)]" checked />
+              <span class="text-white/90 text-sm">Manter estrutura, traduzir e adaptar</span>
+            </label>
+            <label class="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-white/5">
+              <input type="checkbox" name="briefing-opt" value="manter-cores" class="rounded accent-[var(--color-accent)]" checked />
+              <span class="text-white/90 text-sm">Manter cores da referência</span>
+            </label>
+            <label class="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-white/5">
+              <input type="checkbox" name="briefing-opt" value="traduzir-pt" class="rounded accent-[var(--color-accent)]" checked />
+              <span class="text-white/90 text-sm">Traduzir para português</span>
+            </label>
+            <label class="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-white/5">
+              <input type="checkbox" name="briefing-opt" value="fiel-referencia" class="rounded accent-[var(--color-accent)]" checked />
+              <span class="text-white/90 text-sm">100% fiel (só trocar textos)</span>
+            </label>
+          </div>
+        </fieldset>
+
+        <fieldset class="p-5 rounded-xl bg-[var(--color-bg-elevated)] border border-[var(--color-border)]">
+          <legend class="text-sm font-medium text-white/70 mb-4">Opções adicionais</legend>
+          <div class="grid sm:grid-cols-2 gap-3">
+            <label class="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-white/5">
+              <input type="checkbox" name="briefing-opt" value="simplificar" class="rounded accent-[var(--color-accent)]" />
+              <span class="text-white/70 text-sm">Simplificar layout</span>
+            </label>
+            <label class="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-white/5">
+              <input type="checkbox" name="briefing-opt" value="minha-paleta" class="rounded accent-[var(--color-accent)]" />
+              <span class="text-white/70 text-sm">Minha paleta de cores</span>
+            </label>
+            <label class="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-white/5">
+              <input type="checkbox" name="briefing-opt" value="remover-elementos" class="rounded accent-[var(--color-accent)]" />
+              <span class="text-white/70 text-sm">Remover elementos</span>
+            </label>
+            <label class="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-white/5">
+              <input type="checkbox" name="briefing-opt" value="recriar-inspirado" class="rounded accent-[var(--color-accent)]" />
+              <span class="text-white/70 text-sm">Recriar inspirado (mais liberdade)</span>
+            </label>
+          </div>
+        </fieldset>
+
+        <div>
+          <label for="briefing-text" class="block text-sm font-medium text-white/80 mb-2">Briefing em texto (opcional)</label>
+          <textarea
+            id="briefing-text"
+            rows="2"
+            placeholder="Ex: site médico, público clínicas pequenas..."
+            class="w-full px-4 py-3 rounded-xl bg-[var(--color-bg-elevated)] border border-[var(--color-border)] text-white placeholder-white/40 focus:ring-2 focus:ring-[var(--color-accent)] resize-none text-sm"
+          ></textarea>
+        </div>
+      </div>
+
+      <h2 class="text-lg font-bold text-white mb-2">Cada página</h2>
+      <p class="text-white/50 text-sm mb-4">O que você quer em cada uma?</p>
+      <div id="pages-describe" class="space-y-3 mb-8"></div>
+
+      <button type="button" id="go-step-3" class="px-6 py-3 rounded-xl bg-[var(--color-accent)] text-[#0a0a0a] font-semibold hover:bg-[var(--color-accent-hover)] transition-colors">
+        Gerar prompts
+      </button>
+    </section>
+
+    <!-- ETAPA 3: Prompts -->
+    <section id="step-3" class="wizard-step hidden">
+      <h1 class="text-2xl font-bold text-white mb-1">Prompts prontos</h1>
+      <p class="text-white/50 text-sm mb-6">Bateria completa para site pronto e funcional. Use no Cursor.</p>
+
+      <div class="flex flex-wrap gap-3 mb-6 items-center">
+        <button type="button" id="copy-initial-btn" class="px-5 py-2.5 rounded-xl bg-[var(--color-accent)] text-[#0a0a0a] font-semibold hover:bg-[var(--color-accent-hover)] transition-colors text-sm" title="Cole no Cursor com Ctrl+V para iniciar tudo">
+          Copiar prompt inicial
+        </button>
+        <span class="text-white/40 text-xs">→ Cole no Cursor (Ctrl+V) para rodar toda a bateria</span>
+        <button type="button" id="save-prompts-btn" class="px-5 py-2.5 rounded-xl border border-[var(--color-border)] text-white hover:bg-white/5 transition-colors text-sm font-medium">
+          Salvar prompts
+        </button>
+      </div>
+
+      <div id="prompts-list" class="space-y-4"></div>
+      <button type="button" id="go-back-hub" class="mt-6 px-6 py-3 rounded-xl bg-[var(--color-accent)] text-[#0a0a0a] font-semibold hover:bg-[var(--color-accent-hover)] transition-colors">
+        ← Voltar ao hub
+      </button>
+    </section>
+    </div><!-- /wizard-section -->
+  </div>
+
+  <script define:vars={{ apiUrl: 'http://127.0.0.1:3001' }}>
+    const steps = [1, 2, 3];
+    let capturedPages = [];
+    let pageDescriptions = {};
+    let cachedSites = [];
+    const STORAGE_KEY = 'criador-project-name';
+
+    function slugify(name) {
+      return String(name || '').replace(/[^a-z0-9-]/gi, '-').replace(/-+/g, '-').replace(/^-|-$/g, '').toLowerCase() || 'site';
+    }
+
+    function showHub() {
+      document.getElementById('hub-section')?.classList.remove('hidden');
+      document.getElementById('wizard-section')?.classList.add('hidden');
+      loadSites();
+    }
+
+    function showWizard(projectName) {
+      const slug = slugify(projectName);
+      localStorage.setItem(STORAGE_KEY, slug);
+      document.getElementById('hub-section')?.classList.add('hidden');
+      document.getElementById('wizard-section')?.classList.remove('hidden');
+      const el = document.getElementById('current-project-name');
+      if (el) el.textContent = slug;
+      showStep(1);
+    }
+
+    function filterAndSortSites(sites, search, sort) {
+      let out = sites.filter((s) => {
+        if (!search.trim()) return true;
+        const q = search.trim().toLowerCase();
+        const name = (s.name || '').toLowerCase();
+        const display = (s.displayName || '').toLowerCase();
+        const slug = (s.slug || '').toLowerCase();
+        return name.includes(q) || display.includes(q) || slug.includes(q);
       });
-      scrollBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (sort === 'recent') out.sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
+      else if (sort === 'oldest') out.sort((a, b) => (a.createdAt || '').localeCompare(b.createdAt || ''));
+      else if (sort === 'name-asc') out.sort((a, b) => ((a.displayName || a.name || '').toLowerCase()).localeCompare((b.displayName || b.name || '').toLowerCase()));
+      else if (sort === 'name-desc') out.sort((a, b) => ((b.displayName || b.name || '').toLowerCase()).localeCompare((a.displayName || a.name || '').toLowerCase()));
+      else if (sort === 'deploy') {
+        out = out.filter((s) => s.deployUrl);
+        out.sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
+      } else if (sort === 'no-deploy') {
+        out = out.filter((s) => !s.deployUrl);
+        out.sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
+      }
+      return out;
+    }
+
+    function showToast(type, msg) {
+      const el = document.getElementById('git-toast');
+      if (!el || !msg) { if (el) el.classList.add('opacity-0'); return; }
+      const bg = type === 'success' ? 'bg-emerald-600' : type === 'error' ? 'bg-red-600' : 'bg-amber-600';
+      const icon = type === 'error' ? '✖' : type === 'success' ? '✓' : 'ℹ';
+      el.className = `fixed bottom-6 left-1/2 -translate-x-1/2 z-[200] px-4 py-3 rounded-lg text-sm font-medium shadow-xl max-w-md pointer-events-none transition-opacity duration-300 ${bg} text-white`;
+      el.textContent = `${icon} ${msg}`;
+      el.classList.remove('opacity-0');
+      setTimeout(() => el.classList.add('opacity-0'), 4000);
+    }
+
+    function showGitFeedback(card, type, msg) {
+      const el = card?.querySelector('[data-git-feedback]');
+      if (!el) return;
+      el.innerHTML = msg ? `<span style="color:${type==='success'?'#34d399':type==='error'?'#f87171':'#fbbf24'}">${type==='error'?'✖ ':type==='success'?'✓ ':'ℹ '}${msg}</span>` : '';
+    }
+
+    function handleGitCommit(btn) {
+      const slug = btn.getAttribute('data-slug');
+      const card = btn.closest('[data-slug]');
+      const msgInput = card?.querySelector('[data-commit-msg]');
+      const message = msgInput?.value?.trim() || 'Atualização';
+      if (!slug) return;
+      showGitFeedback(card, 'info', '');
+      const origText = btn.textContent;
+      btn.textContent = 'Comitando...';
+      btn.disabled = true;
+      fetch(`${apiUrl}/api/sites/${slug}/git-commit`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message }),
+      }).then(res => res.json().catch(() => ({}))).then(data => {
+        if (data.success) {
+          btn.textContent = data.nothingToCommit ? 'Limpo' : '✓ Commit';
+          const msg = data.message || 'Commit realizado';
+          showGitFeedback(card, data.nothingToCommit ? 'info' : 'success', msg);
+          showToast(data.nothingToCommit ? 'info' : 'success', msg);
+          setTimeout(() => { btn.textContent = origText; btn.disabled = false; showGitFeedback(card, 'success', ''); }, 2500);
+        } else {
+          const errMsg = data.error || 'Erro no commit';
+          showGitFeedback(card, 'error', errMsg);
+          showToast('error', errMsg);
+          btn.textContent = '✖ Erro';
+          setTimeout(() => { btn.textContent = origText; btn.disabled = false; showGitFeedback(card, 'error', ''); }, 4000);
+        }
+      }).catch(e => {
+        const errMsg = e instanceof Error ? e.message : 'Falha de rede';
+        showGitFeedback(card, 'error', errMsg);
+        showToast('error', errMsg);
+        btn.textContent = '✖ Erro';
+        setTimeout(() => { btn.textContent = origText; btn.disabled = false; showGitFeedback(card, 'error', ''); }, 4000);
       });
     }
+
+    function handleGitPush(btn) {
+      const slug = btn.getAttribute('data-slug');
+      const card = btn.closest('[data-slug]');
+      if (!slug) return;
+      showGitFeedback(card, 'info', '');
+      const origText = btn.textContent;
+      btn.textContent = 'Enviando...';
+      btn.disabled = true;
+      fetch(`${apiUrl}/api/sites/${slug}/git-push`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({}),
+      }).then(res => res.json().catch(() => ({}))).then(data => {
+        if (data.success) {
+          btn.textContent = '✓ Push OK';
+          const msg = data.message || 'Alterações enviadas ao remoto';
+          showGitFeedback(card, 'success', msg);
+          showToast('success', msg);
+          setTimeout(() => { btn.textContent = origText; btn.disabled = false; showGitFeedback(card, 'success', ''); loadSites(); }, 2500);
+        } else {
+          const errMsg = data.error || 'Erro no push';
+          showGitFeedback(card, 'error', errMsg);
+          showToast('error', errMsg);
+          btn.textContent = '✖ Erro';
+          setTimeout(() => { btn.textContent = origText; btn.disabled = false; showGitFeedback(card, 'error', ''); }, 5000);
+        }
+      }).catch(e => {
+        const errMsg = e instanceof Error ? e.message : 'Falha de rede';
+        showGitFeedback(card, 'error', errMsg);
+        showToast('error', errMsg);
+        btn.textContent = '✖ Erro';
+        setTimeout(() => { btn.textContent = origText; btn.disabled = false; showGitFeedback(card, 'error', ''); }, 5000);
+      });
+    }
+
+    function renderSites(sites) {
+      const listEl = document.getElementById('sites-list');
+      const countEl = document.getElementById('sites-count');
+      const searchEl = document.getElementById('sites-search');
+      const sortEl = document.getElementById('sites-sort');
+      const search = searchEl?.value?.trim() || '';
+      const sort = sortEl?.value || 'recent';
+      const filtered = filterAndSortSites(sites, search, sort);
+      if (!listEl) return;
+      if (filtered.length === 0) {
+        listEl.innerHTML = sites.length === 0
+          ? '<p class="text-white/40 text-sm">Nenhum site criado ainda. Use "Novo site" para começar.</p>'
+          : '<p class="text-white/40 text-sm">Nenhum site corresponde à busca ou filtro.</p>';
+        if (countEl) { countEl.classList.add('hidden'); }
+      } else {
+        listEl.innerHTML = filtered.map((s) => {
+            const slug = (s.slug || s.name || '').replace(/</g, '&lt;');
+            const display = (s.displayName || s.name || s.slug || '').replace(/</g, '&lt;');
+            const deployUrl = (s.deployUrl || '').replace(/"/g, '&quot;');
+            const remoteUrl = (s.remoteUrl || '').replace(/"/g, '&quot;');
+            const previewUrl = `${apiUrl}/preview/${slug}`;
+            const hasBuild = s.hasBuild === true;
+            const repoForVercel = (s.remoteUrl || '').replace(/\.git$/, '');
+            const vercelUrl = repoForVercel ? `https://vercel.com/new/clone?repository-url=${encodeURIComponent(repoForVercel)}` : 'https://vercel.com/new/clone';
+            return `
+            <div class="p-4 rounded-xl bg-[var(--color-bg-elevated)] border border-[var(--color-border)]" data-slug="${slug}">
+              <div class="flex items-center justify-between gap-2 mb-3">
+                <div class="flex items-center gap-2">
+                  <span class="font-medium text-white">${display}</span>
+                  <span class="text-white/50 text-xs">${slug}</span>
+                </div>
+                <button type="button" data-delete-site data-slug="${slug}" data-display="${display.replace(/"/g, '&quot;')}" class="px-2 py-1 rounded-lg text-red-400/80 hover:text-red-400 hover:bg-red-500/10 text-xs transition-colors" title="Excluir site">Excluir</button>
+              </div>
+              <div class="flex flex-wrap gap-2 mb-4">
+                ${hasBuild ? `<a href="${previewUrl}" target="_blank" rel="noopener" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-[var(--color-accent)]/20 text-[var(--color-accent)] hover:bg-[var(--color-accent)]/30 text-xs font-medium transition-colors">Preview</a>` : `<button type="button" data-build data-slug="${slug}" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-amber-500/20 text-amber-400 hover:bg-amber-500/30 text-xs font-medium transition-colors">Construir</button>`}
+                ${deployUrl ? `<a href="${deployUrl}" target="_blank" rel="noopener" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-[var(--color-border)] text-white/80 hover:bg-white/5 text-xs font-medium transition-colors">Abrir site ↗</a>` : ''}
+              </div>
+              <details class="group border-t border-[var(--color-border)] pt-3" data-site-details ${!s.deployUrl ? 'open' : ''}>
+                <summary class="text-white/70 text-sm cursor-pointer hover:text-white select-none">▸ Git e Deploy</summary>
+                <div class="mt-3 space-y-4">
+                  <div>
+                    <label class="text-white/50 text-xs block mb-1.5">Git — Repositório remoto</label>
+                    <div class="flex flex-wrap gap-2 items-center">
+                      <input type="url" data-remote-input placeholder="https://github.com/user/repo.git" value="${remoteUrl}" class="flex-1 min-w-0 px-3 py-2 rounded-lg bg-[var(--color-bg)] border border-[var(--color-border)] text-white text-xs placeholder-white/30 focus:ring-1 focus:ring-[var(--color-accent)]" />
+                      <button type="button" data-save-remote class="px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-medium transition-colors">Salvar</button>
+                      <button type="button" data-create-repo data-slug="${slug}" class="px-3 py-2 rounded-lg bg-[var(--color-accent)]/20 text-[var(--color-accent)] hover:bg-[var(--color-accent)]/30 text-xs font-medium transition-colors whitespace-nowrap">Criar repositório</button>
+                    </div>
+                    <label class="text-white/50 text-xs block mt-1.5 mb-0.5">Mensagem do commit</label>
+                    <div class="flex gap-2">
+                      <input type="text" data-commit-msg placeholder="Atualização do site" class="flex-1 min-w-0 px-3 py-2 rounded-lg bg-[var(--color-bg)] border border-[var(--color-border)] text-white text-xs placeholder-white/30 focus:ring-1 focus:ring-[var(--color-accent)]" />
+                      <button type="button" data-git-commit data-slug="${slug}" class="px-3 py-2 rounded-lg bg-[var(--color-accent)]/20 text-[var(--color-accent)] hover:bg-[var(--color-accent)]/30 text-xs font-medium transition-colors whitespace-nowrap">Commit</button>
+                      <button type="button" data-git-push data-slug="${slug}" class="px-3 py-2 rounded-lg border border-[var(--color-border)] text-white/80 hover:bg-white/5 text-xs font-medium transition-colors whitespace-nowrap">Push</button>
+                    </div>
+                    <div data-git-feedback class="mt-2 min-h-[1.5rem] text-xs" role="status" aria-live="polite"></div>
+                  </div>
+                  <div>
+                    <label class="text-white/50 text-xs block mb-1.5">Deploy — Vercel</label>
+                    <div class="flex flex-wrap gap-2 items-center">
+                      <a href="${vercelUrl}" target="_blank" rel="noopener" class="inline-flex items-center gap-1 px-3 py-2 rounded-lg bg-black text-white hover:bg-white/10 text-xs font-medium transition-colors border border-white/20">Conectar na Vercel ↗</a>
+                      <span class="text-white/40 text-xs">Depois cole a URL do deploy:</span>
+                    </div>
+                    <div class="flex gap-2 mt-1.5">
+                      <input type="url" data-deploy-url-input placeholder="https://meu-site.vercel.app" value="${deployUrl}" class="flex-1 min-w-0 px-3 py-2 rounded-lg bg-[var(--color-bg)] border border-[var(--color-border)] text-white text-xs placeholder-white/30 focus:ring-1 focus:ring-[var(--color-accent)]" />
+                      <button type="button" data-save-deploy-url class="px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-medium transition-colors">Salvar</button>
+                    </div>
+                  </div>
+                </div>
+              </details>
+            </div>
+          `}).join('');
+        if (countEl) {
+          countEl.textContent = `${filtered.length} de ${sites.length} site${sites.length !== 1 ? 's' : ''}`;
+          countEl.classList.remove('hidden');
+        }
+        listEl.querySelectorAll('[data-save-deploy-url]').forEach((btn) => {
+            btn.addEventListener('click', async () => {
+              const card = btn.closest('[data-slug]');
+              const slug = card?.getAttribute('data-slug');
+              const input = card?.querySelector('[data-deploy-url-input]');
+              const url = input?.value?.trim() || '';
+              if (!slug) return;
+              try {
+                const res = await fetch(`${apiUrl}/api/sites/update-deploy-url`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ slug, deployUrl: url }),
+                });
+                const data = await res.json();
+                if (res.ok && data.success) {
+                  btn.textContent = 'Salvo';
+                  setTimeout(() => { btn.textContent = 'Salvar'; loadSites(); }, 800);
+                } else throw new Error(data.error || 'Erro');
+              } catch (e) {
+                console.error('\x1b[31m✖ Erro ao salvar URL:\x1b[0m', e);
+                btn.textContent = '✖ Erro';
+                setTimeout(() => { btn.textContent = 'Salvar'; }, 1500);
+              }
+            });
+          });
+          listEl.querySelectorAll('[data-save-remote]').forEach((btn) => {
+            btn.addEventListener('click', async () => {
+              const card = btn.closest('[data-slug]');
+              const slug = card?.getAttribute('data-slug');
+              const input = card?.querySelector('[data-remote-input]');
+              const remoteUrl = input?.value?.trim() || '';
+              if (!slug) return;
+              try {
+                const res = await fetch(`${apiUrl}/api/sites/${slug}/git-remote`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ remoteUrl }),
+                });
+                const data = await res.json();
+                if (res.ok && data.success) {
+                  btn.textContent = 'Salvo';
+                  setTimeout(() => { btn.textContent = 'Salvar'; loadSites(); }, 800);
+                } else throw new Error(data.error || 'Erro');
+              } catch (e) {
+                console.error('\x1b[31m✖ Erro ao salvar remote:\x1b[0m', e);
+                btn.textContent = '✖ Erro';
+                setTimeout(() => { btn.textContent = 'Salvar'; }, 1500);
+              }
+            });
+          });
+          listEl.querySelectorAll('[data-create-repo]').forEach((btn) => {
+            btn.addEventListener('click', async () => {
+              const slug = btn.getAttribute('data-slug');
+              if (!slug) return;
+              const origText = btn.textContent;
+              btn.textContent = 'Criando...';
+              btn.disabled = true;
+              try {
+                const res = await fetch(`${apiUrl}/api/github/create-repo`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ slug, doPush: true }),
+                });
+                const data = await res.json();
+                if (res.ok && data.success) {
+                  btn.textContent = '✓ Repo criado';
+                  loadSites();
+                  setTimeout(() => { btn.textContent = origText; btn.disabled = false; }, 2000);
+                } else throw new Error(data.error || 'Erro');
+              } catch (e) {
+                console.error('\x1b[31m✖ Erro ao criar repo:\x1b[0m', e);
+                btn.textContent = '✖ Erro';
+                setTimeout(() => { btn.textContent = origText; btn.disabled = false; }, 2000);
+              }
+            });
+          });
+          listEl.querySelectorAll('[data-build]').forEach((btn) => {
+            btn.addEventListener('click', async () => {
+              const slug = btn.getAttribute('data-slug');
+              if (!slug) return;
+              const origText = btn.textContent;
+              btn.textContent = 'Construindo...';
+              btn.disabled = true;
+              try {
+                const res = await fetch(`${apiUrl}/api/sites/${slug}/build`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({}),
+                });
+                const data = await res.json();
+                if (res.ok && data.success) {
+                  btn.textContent = '✓ Pronto';
+                  loadSites();
+                  setTimeout(() => { btn.disabled = false; }, 1000);
+                } else {
+                  const msg = data.error || 'Erro';
+                  if (data.linkCheck?.broken?.length) {
+                    alert(`Links quebrados encontrados:\n\n${data.linkCheck.broken.map((b) => `${b.url} (em ${b.from})`).join('\n')}`);
+                  }
+                  throw new Error(msg);
+                }
+              } catch (e) {
+                console.error('\x1b[31m✖ Erro ao construir:\x1b[0m', e);
+                btn.textContent = '✖ Erro';
+                setTimeout(() => { btn.textContent = origText; btn.disabled = false; }, 2000);
+              }
+            });
+          });
+          listEl.querySelectorAll('[data-delete-site]').forEach((btn) => {
+            btn.addEventListener('click', async () => {
+              const slug = btn.getAttribute('data-slug');
+              const display = btn.getAttribute('data-display') || slug;
+              if (!slug) return;
+              const msg = `Excluir o site "${display}"?\n\n⚠️ Esta ação é IRREVERSÍVEL. Todos os arquivos em sites/${slug} serão apagados permanentemente.`;
+              if (!confirm(msg)) return;
+              const origText = btn.textContent;
+              btn.textContent = 'Excluindo...';
+              btn.disabled = true;
+              try {
+                const res = await fetch(`${apiUrl}/api/sites/${slug}/delete`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({}),
+                });
+                const data = await res.json();
+                if (res.ok && data.success) {
+                  loadSites();
+                } else throw new Error(data.error || 'Erro');
+              } catch (e) {
+                console.error('\x1b[31m✖ Erro ao excluir:\x1b[0m', e);
+                btn.textContent = '✖ Erro';
+                setTimeout(() => { btn.textContent = origText; btn.disabled = false; }, 2000);
+              }
+            });
+          });
+        }
+    }
+
+    async function loadSites() {
+      const listEl = document.getElementById('sites-list');
+      if (!listEl) return;
+      try {
+        const ctrl = new AbortController();
+        const t = setTimeout(() => ctrl.abort(), 3000);
+        const res = await fetch(`${apiUrl}/api/sites`, { signal: ctrl.signal });
+        clearTimeout(t);
+        const data = await res.json();
+        cachedSites = data.sites || [];
+        renderSites(cachedSites);
+      } catch (e) {
+        listEl.innerHTML = '<p class="text-red-400 text-sm">✖ API inacessível. Rode <code>bun run dev</code> e aguarde os dois servidores subirem.</p>';
+      }
+    }
+
+    document.getElementById('new-project-form')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const input = document.getElementById('project-name');
+      const name = input?.value?.trim();
+      if (!name) return;
+      const slug = slugify(name);
+      const submitBtn = input?.form?.querySelector('button[type="submit"]');
+      if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Preparando...'; }
+      try {
+        const res = await fetch(`${apiUrl}/api/sites/prepare`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: slug }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.error || `Erro ${res.status}`);
+        showWizard(name);
+      } catch (err) {
+        const isNetworkErr = err instanceof TypeError || (err instanceof Error && /fetch|network|connection|refused/i.test(err.message || ''));
+        const msg = isNetworkErr ? 'Conexão recusada. Rode `bun run dev` e aguarde os servidores subirem (Astro + API).' : (err instanceof Error ? err.message : 'Erro ao preparar');
+        alert('✖ ' + msg);
+      } finally {
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Iniciar criação'; }
+      }
+    });
+
+    document.getElementById('back-to-hub')?.addEventListener('click', () => showHub());
+    document.getElementById('go-back-hub')?.addEventListener('click', () => showHub());
+
+    document.getElementById('sites-list')?.addEventListener('click', (e) => {
+      const commitBtn = e.target.closest('[data-git-commit]');
+      const pushBtn = e.target.closest('[data-git-push]');
+      if (commitBtn && !commitBtn.disabled) {
+        e.preventDefault();
+        handleGitCommit(commitBtn);
+      } else if (pushBtn && !pushBtn.disabled) {
+        e.preventDefault();
+        handleGitPush(pushBtn);
+      }
+    });
+
+    document.getElementById('refresh-sites-btn')?.addEventListener('click', () => loadSites());
+    document.getElementById('sites-search')?.addEventListener('input', () => renderSites(cachedSites));
+    document.getElementById('sites-search')?.addEventListener('search', () => renderSites(cachedSites));
+    document.getElementById('sites-sort')?.addEventListener('change', () => renderSites(cachedSites));
+
+    document.getElementById('open-config-btn')?.addEventListener('click', async () => {
+      const modal = document.getElementById('config-modal');
+      if (!modal) return;
+      const cred = await fetch(`${apiUrl}/api/credentials`).then((r) => r.json()).catch(() => ({}));
+      const ghStatus = document.getElementById('config-github-status');
+      if (ghStatus) {
+        ghStatus.textContent = cred.hasGithub ? '✓ Token configurado' : 'Token não configurado';
+        ghStatus.className = 'text-xs mt-1 ' + (cred.hasGithub ? 'text-green-400' : 'text-amber-400');
+        ghStatus.classList.remove('hidden');
+      }
+      document.getElementById('config-github-token')?.setAttribute('placeholder', cred.hasGithub ? '••••••••••••' : 'ghp_xxxxxxxxxxxx');
+      modal.classList.remove('hidden');
+    });
+
+    document.getElementById('close-config-btn')?.addEventListener('click', () => document.getElementById('config-modal')?.classList.add('hidden'));
+    document.getElementById('cancel-config-btn')?.addEventListener('click', () => document.getElementById('config-modal')?.classList.add('hidden'));
+    document.getElementById('config-modal')?.addEventListener('click', (e) => {
+      if (e.target === document.getElementById('config-modal')) document.getElementById('config-modal')?.classList.add('hidden');
+    });
+
+    document.getElementById('config-form')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const githubToken = document.getElementById('config-github-token');
+      const body = {};
+      if (githubToken?.value?.trim()) body.githubToken = githubToken.value.trim();
+      if (Object.keys(body).length === 0) {
+        alert('Informe pelo menos um token para salvar.');
+        return;
+      }
+      try {
+        const res = await fetch(`${apiUrl}/api/credentials`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Erro');
+        if (githubToken) githubToken.value = '';
+        document.getElementById('config-modal')?.classList.add('hidden');
+      } catch (err) {
+        console.error('\x1b[31m✖ Erro ao salvar credenciais:\x1b[0m', err);
+        alert('Erro ao salvar: ' + (err instanceof Error ? err.message : 'Erro'));
+      }
+    });
+
+    async function checkApiStatus() {
+      const el = document.getElementById('api-status');
+      if (!el) return;
+      try {
+        const ctrl = new AbortController();
+        const t = setTimeout(() => ctrl.abort(), 2000);
+        const res = await fetch(`${apiUrl}/health`, { signal: ctrl.signal });
+        clearTimeout(t);
+        const data = await res.json();
+        if (data?.ok) {
+          el.innerHTML = '<span class="text-green-400">✓ API conectada (porta 3001)</span>';
+          el.className = 'text-sm mb-2';
+        } else throw new Error('Resposta inválida');
+      } catch (e) {
+        el.innerHTML = '<span class="text-amber-400">⚠ API offline</span> — <span class="text-white/70">Rode <code class="bg-white/10 px-1 rounded">bun run dev:fresh</code> (ou mate a porta 3001 e inicie <code class="bg-white/10 px-1 rounded">bun run capture-api</code>)</span>';
+        el.className = 'text-sm mb-2';
+      }
+    }
+    checkApiStatus();
+
+    showHub();
+
+    function showStep(n) {
+      document.querySelectorAll('.wizard-step').forEach((el, i) => {
+        el.classList.toggle('hidden', i + 1 !== n);
+      });
+      document.querySelectorAll('.wizard-tab').forEach((el, i) => {
+        const isActive = i + 1 === n;
+        el.classList.toggle('opacity-60', !isActive);
+        el.classList.toggle('bg-white/10', isActive);
+        el.setAttribute('aria-current', isActive ? 'step' : null);
+      });
+    }
+
+    document.querySelectorAll('.wizard-tab').forEach((btn) => {
+      btn.addEventListener('click', () => showStep(parseInt(btn.dataset.step, 10)));
+    });
+
+    document.getElementById('capture-btn')?.addEventListener('click', async () => {
+      const urls = (document.getElementById('urls-input')?.value || '')
+        .split('\n').map(u => u.trim()).filter(u => u && (u.startsWith('http://') || u.startsWith('https://')));
+      if (!urls.length) {
+        const err = document.getElementById('capture-error');
+        err.textContent = 'Cole pelo menos uma URL válida.';
+        err.classList.remove('hidden');
+        return;
+      }
+
+      const btn = document.getElementById('capture-btn');
+      const progressEl = document.getElementById('capture-progress');
+      const statusEl = document.getElementById('capture-status');
+      const countEl = document.getElementById('capture-count');
+      const barEl = document.getElementById('capture-progress-bar');
+      const logEl = document.getElementById('capture-log');
+      const errEl = document.getElementById('capture-error');
+      const resultEl = document.getElementById('capture-result');
+
+      btn.disabled = true;
+      errEl.classList.add('hidden');
+      resultEl?.classList.add('hidden');
+      progressEl?.classList.remove('hidden');
+      logEl.innerHTML = '';
+      capturedPages = [];
+
+      const total = urls.length;
+
+      for (let i = 0; i < urls.length; i++) {
+        const url = urls[i];
+        statusEl.textContent = `Página ${i + 1} de ${total}`;
+        countEl.textContent = `${i + 1}/${total}`;
+        if (barEl) barEl.style.width = `${(i / total) * 100}%`;
+        const logEntry = document.createElement('div');
+        logEntry.className = 'text-white/40';
+        logEntry.dataset.idx = String(i);
+        logEntry.textContent = `⏳ ${i + 1}/${total} ${url.slice(-50)}...`;
+        logEl.appendChild(logEntry);
+
+        try {
+          const res = await fetch(`${apiUrl}/api/capture`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ url }),
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error || 'Erro');
+          if (data.pages?.[0]) {
+            capturedPages.push(data.pages[0]);
+            logEntry.className = 'text-[var(--color-accent)]';
+            logEntry.textContent = `✓ ${i + 1}/${total} ${data.pages[0].slug} (${data.files?.length || 0} arquivos)`;
+            logEntry.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }
+        } catch (e) {
+          logEntry.className = 'text-red-400';
+          logEntry.textContent = `✖ ${i + 1}/${total} Falha: ${e instanceof Error ? e.message : 'Erro'}`;
+          logEntry.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          statusEl.textContent = 'Erro na captura';
+          errEl.textContent = `✖ ${e instanceof Error ? e.message : 'Erro'}. Servidor rodando? (bun run dev:full)`;
+          errEl.classList.remove('hidden');
+          break;
+        }
+      }
+
+      if (barEl) barEl.style.width = '100%';
+      countEl.textContent = `${capturedPages.length}/${total}`;
+      statusEl.textContent = capturedPages.length === total ? 'Pronto!' : `Interrompido: ${capturedPages.length}/${total}`;
+
+      if (capturedPages.length > 0) {
+        resultEl?.classList.remove('hidden');
+      }
+      btn.disabled = false;
+    });
+
+    document.getElementById('go-step-2')?.addEventListener('click', () => {
+      const container = document.getElementById('pages-describe');
+      if (!container) return;
+      container.innerHTML = capturedPages.map((p) => `
+        <div class="p-4 rounded-xl bg-[var(--color-bg-elevated)] border border-[var(--color-border)]">
+          <label class="block text-sm font-medium text-white/90 mb-2">${p.slug}</label>
+          <textarea data-slug="${p.slug.replace(/"/g, '&quot;')}" rows="2" placeholder="O que você quer nesta página?" class="w-full px-4 py-2 rounded-lg bg-[var(--color-bg)] border border-[var(--color-border)] text-white placeholder-white/40 text-sm resize-none"></textarea>
+        </div>
+      `).join('');
+      showStep(2);
+    });
+
+    document.getElementById('go-step-3')?.addEventListener('click', () => {
+      const textareas = document.querySelectorAll('#pages-describe textarea[data-slug]');
+      pageDescriptions = {};
+      textareas.forEach((ta) => {
+        const slug = ta.getAttribute('data-slug');
+        if (slug) pageDescriptions[slug] = ta.value?.trim() || '';
+      });
+
+      const opts = Array.from(document.querySelectorAll('input[name="briefing-opt"]:checked')).map((c) => c.value);
+      const briefingText = document.getElementById('briefing-text')?.value?.trim() || '';
+
+      const promptsList = document.getElementById('prompts-list');
+      if (!promptsList) return;
+
+      const slug = localStorage.getItem(STORAGE_KEY) || slugify(document.getElementById('current-project-name')?.textContent || 'site');
+      const pagePrompts = capturedPages.map((p) => buildPagePrompt(p, opts, briefingText, pageDescriptions[p.slug] || '', slug));
+      const fullBatch = buildFullBatch(pagePrompts, slug);
+
+      promptsList.innerHTML = `
+        <div class="mb-6 p-4 rounded-xl bg-[var(--color-bg-elevated)] border border-[var(--color-border)]">
+          <h3 class="text-sm font-medium text-white/90 mb-2">Bateria completa (${fullBatch.split('--- ').length - 1} blocos)</h3>
+          <p class="text-white/50 text-xs">Construção → SEO → Links → Menu → Mobile → Imagens → Revisão → Validação</p>
+        </div>
+      ` + capturedPages.map((p, i) => `
+        <details class="group rounded-xl bg-[var(--color-bg-elevated)] border border-[var(--color-border)] overflow-hidden">
+          <summary class="px-4 py-3 cursor-pointer flex items-center justify-between text-sm font-medium text-white hover:bg-white/5">
+            <span>${p.slug}</span>
+            <span class="text-white/40 group-open:rotate-180">▼</span>
+          </summary>
+          <pre class="p-4 pt-0 text-xs text-white/70 whitespace-pre-wrap overflow-x-auto max-h-60 overflow-y-auto border-t border-[var(--color-border)]">${pagePrompts[i].replace(/</g, '&lt;')}</pre>
+        </details>
+      `).join('');
+
+      window.__fullBatch = fullBatch;
+
+      showStep(3);
+    });
+
+    const PROMPT_INICIAL = `rode os @f8/prompts-gerados.md na sequencia`;
+
+    document.getElementById('copy-initial-btn')?.addEventListener('click', () => {
+      navigator.clipboard.writeText(PROMPT_INICIAL).then(() => {
+        const b = document.getElementById('copy-initial-btn');
+        if (b) { b.textContent = 'Copiado! Use Ctrl+V no Cursor'; setTimeout(() => { b.textContent = 'Copiar prompt inicial'; }, 2000); }
+      });
+    });
+
+    document.getElementById('save-prompts-btn')?.addEventListener('click', async () => {
+      const batch = window.__fullBatch;
+      if (!batch) return;
+      const btn = document.getElementById('save-prompts-btn');
+      if (btn) btn.disabled = true;
+      try {
+        const res = await fetch(`${apiUrl}/api/save-prompts`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ content: batch }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Erro');
+        if (btn) {
+          btn.textContent = 'Salvo em prompts-gerados.md';
+          setTimeout(() => { btn.textContent = 'Salvar prompts'; }, 2000);
+        }
+      } catch (e) {
+        if (btn) btn.textContent = '✖ Erro ao salvar';
+        setTimeout(() => { btn.textContent = 'Salvar prompts'; }, 2000);
+      } finally {
+        if (btn) btn.disabled = false;
+      }
+    });
+
+    function buildBasePrompt(opts, briefingText) {
+      const parts = [];
+      if (opts.includes('manter-traduzir')) parts.push('Manter a estrutura original da referência, apenas traduzir e adaptar ao briefing.');
+      if (opts.includes('simplificar')) parts.push('Simplificar o layout (menos seções, mais enxuto).');
+      if (opts.includes('manter-cores')) parts.push('Manter as cores da referência.');
+      if (opts.includes('minha-paleta')) parts.push('Aplicar paleta de cores customizada.');
+      if (opts.includes('traduzir-pt')) parts.push('Todo conteúdo em português.');
+      if (opts.includes('remover-elementos')) parts.push('Remover elementos desnecessários.');
+      if (opts.includes('fiel-referencia')) parts.push('Manter 100% fiel à referência, apenas trocar textos.');
+      if (opts.includes('recriar-inspirado')) parts.push('Recriar do zero inspirado na referência.');
+      if (briefingText) parts.push(`Briefing: ${briefingText}`);
+      return parts.join(' ');
+    }
+
+    function buildPagePrompt(page, opts, briefingText, pageDesc, projectSlug) {
+      const hasImages = (page.files || []).some((f) => f.includes('/images/'));
+      const imagesNote = hasImages
+        ? `\nIMAGENS: Use public/reference/${page.slug}/images/ (images.json). No Astro: src="/reference/${page.slug}/images/img-XXX.ext"`
+        : '\nIMAGENS: Use placeholders (picsum.photos, Unsplash) onde necessário.';
+      const base = buildBasePrompt(opts, briefingText);
+      return `Com base em public/reference/${page.slug}/, crie a página em sites/${projectSlug}/src/pages/.\n\nINSTRUÇÕES: ${base || '(Siga o briefing.)'}\n\nESTA PÁGINA: ${pageDesc || 'Seguir a referência.'}\n\nUse page.html e styles.css como base.${imagesNote}\n\nAstro + Tailwind. HTML semântico e responsivo.`;
+    }
+
+    const EXTRA_PROMPTS = {
+      seo: `--- PROMPT: SEO ---
+Configure o SEO do site Astro:
+- Meta title e description em todas as páginas (BaseLayout ou por página)
+- Open Graph e Twitter Cards para compartilhamento
+- Sitemap em /sitemap-index.xml (use @astrojs/sitemap)
+- robots.txt em /robots.txt
+- JSON-LD: Organization, WebSite (schema.org)`,
+
+      links: `--- PROMPT: Links internos ---
+Revise e garanta a estrutura de links:
+- Header e footer com nav para todas as páginas
+- Breadcrumbs nas páginas internas (opcional)
+- Links entre conteúdo relacionado
+- CTAs e botões apontando para rotas válidas`,
+
+      menu: `--- PROMPT: Revisão - menu/navegação ---
+Revise e otimize o menu de navegação (src/config.ts nav):
+- Se houver mais de 6–7 itens no menu principal, agrupe para melhor UX
+- Estratégias: submenus, dropdown "Mais", ou itens secundários no rodapé
+- Priorize no header: Início, principais serviços, Contato/Blog
+- Itens menos frequentes: mover para rodapé ou menu "Recursos"/"Mais"
+- Atualize Header.astro e Footer.astro para dropdown se necessário
+- Máximo recomendado no menu principal: 5–7 itens visíveis`,
+
+      mobile: `--- PROMPT: Ajustes para mobile ---
+Revise e ajuste a experiência mobile:
+- Menu hambúrguer funcional (abrir/fechar, fechar ao clicar em link)
+- Áreas de toque adequadas (mínimo 44x44px para botões e links)
+- Viewport responsivo, sem overflow horizontal
+- Imagens responsivas (max-width, object-fit)
+- Espaçamento adequado em telas pequenas
+- Teste em breakpoints sm, md, lg`,
+
+      imagens: `--- PROMPT: Revisão - imagens quebradas ---
+Revise todas as imagens do site:
+- Liste cada src de img e verifique se o arquivo existe em public/
+- Corrija ou substitua imagens que retornam 404
+- Use placeholders (picsum.photos, Unsplash) para imagens faltantes
+- Garanta que paths /reference/.../images/ apontam para arquivos existentes`,
+
+      revisao: `--- PROMPT: Revisão - links quebrados ---
+Revise todos os links do site:
+- Liste cada href e confira se a rota existe
+- Corrija ou remova links quebrados
+- Garanta que formulários e CTAs levam a rotas válidas`,
+
+      validacao: (s) => `--- PROMPT: Validação final ---
+Execute \`cd sites/${s || 'meu-site'} && bun run build\` e corrija erros.
+Confira: páginas responsivas, navegação funcionando, sem links quebrados.
+Site pronto e funcional.`
+    };
+
+    function buildFullBatch(pagePrompts, projectSlug) {
+      const slug = projectSlug || 'meu-site';
+      const intro = `# Bateria de Prompts – 8links
+Execute em ordem no Cursor. Aguarde cada etapa antes da próxima.
+
+⚠️ ISOLAMENTO OBRIGATÓRIO:
+- DIRETÓRIO DO PROJETO: sites/${slug}/
+- Crie e edite APENAS arquivos dentro de sites/${slug}/
+- NUNCA modifique: f8/src/ (hub), f8/src/styles/hub.css, f8/src/layouts/WizardLayout.astro
+- Cada site é isolado. Blog, conteúdo e assets ficam em sites/${slug}/ apenas.
+
+`;
+      const camada1 = pagePrompts.map((p, i) => `--- PROMPT ${i + 1}/${pagePrompts.length}: Construção página ${i + 1} ---\n${p}`).join('\n\n');
+      const validacao = typeof EXTRA_PROMPTS.validacao === 'function' ? EXTRA_PROMPTS.validacao(slug) : EXTRA_PROMPTS.validacao;
+      return intro + camada1 + '\n\n' + EXTRA_PROMPTS.seo + '\n\n' + EXTRA_PROMPTS.links + '\n\n' + EXTRA_PROMPTS.menu + '\n\n' + EXTRA_PROMPTS.mobile + '\n\n' + EXTRA_PROMPTS.imagens + '\n\n' + EXTRA_PROMPTS.revisao + '\n\n' + validacao;
+    }
   </script>
-</BaseLayout>
+</WizardLayout>

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://digilinks.vercel.app/sitemap-index.xml

@@ -1,0 +1,49 @@
+---
+/**
+ * Página Portfolio - galeria de projetos
+ * Baseada em public/reference/html-bexon-demo-portfolio.html/
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageBreadcrumb from '../../components/PageBreadcrumb.astro';
+import { siteConfig } from '../../config';
+
+const REF = 'html-bexon-demo-portfolio.html';
+const IMG = (file: string) => `/reference/${REF}/images/${file}`;
+
+const projetos = [
+  { titulo: 'Plataforma de Gestão de Eventos', categoria: 'Negócios', img: 'img-014.webp', slug: 'event-management' },
+  { titulo: 'Dashboard de Impacto Ambiental', categoria: 'Negócios', img: 'img-015.webp', slug: 'environmental-dashboard' },
+  { titulo: 'Sistema de CRM Corporativo', categoria: 'Tecnologia', img: 'img-016.webp', slug: 'crm-corporativo' },
+  { titulo: 'App de Sustentabilidade', categoria: 'ESG', img: 'img-019.webp', slug: 'app-sustentabilidade' },
+];
+---
+
+<BaseLayout title={`Portfolio | ${siteConfig.siteName}`} description="Conheça nossos projetos e cases de sucesso.">
+  <article>
+    <section class="py-16 px-6 bg-[#0c1e21] text-white">
+      <div class="max-w-4xl mx-auto text-center">
+        <PageBreadcrumb title="Portfolio" />
+        <h1 class="text-4xl font-bold mt-4">Portfolio</h1>
+        <p class="text-white/80 mt-4">Projetos que transformam negócios</p>
+      </div>
+    </section>
+
+    <section class="py-20 px-6 bg-white">
+      <div class="max-w-6xl mx-auto">
+        <div class="grid md:grid-cols-2 gap-8">
+          {projetos.map((p) => (
+            <a href={`/portfolio/${p.slug}`} class="group block overflow-hidden rounded-lg">
+              <div class="aspect-[4/3] overflow-hidden">
+                <img src={IMG(p.img)} alt={p.titulo} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+              </div>
+              <div class="p-6 bg-[#d8e5e5] group-hover:bg-[#1e8a8a] group-hover:text-white transition-colors">
+                <span class="text-sm text-[#1e8a8a] group-hover:text-white/90">{p.categoria}</span>
+                <h3 class="font-bold text-[#0c1e21] group-hover:text-white mt-1">{p.titulo}</h3>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  </article>
+</BaseLayout>

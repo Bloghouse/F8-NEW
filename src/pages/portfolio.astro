@@ -1,0 +1,13 @@
+---
+/**
+ * Redirect: /portfolio → /cases
+ * Alias da página Cases (Case Studies)
+ */
+export const prerender = true;
+---
+
+<meta http-equiv="refresh" content="0;url=/cases" />
+<script>
+  window.location.href = '/cases';
+</script>
+<p>Redirecionando para <a href="/cases">Cases</a>...</p>

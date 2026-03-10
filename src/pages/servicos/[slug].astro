@@ -1,0 +1,58 @@
+---
+/**
+ * Página Detalhe do Serviço - Service Details
+ * Baseada em public/reference/html-bexon-demo-service-details.html/
+ * Rota: /servicos/[slug]
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageBreadcrumb from '../../components/PageBreadcrumb.astro';
+import { siteConfig } from '../../config';
+
+const REF = 'html-bexon-demo-service-details.html';
+const IMG = (file: string) => `/reference/${REF}/images/${file}`;
+
+export function getStaticPaths() {
+  return ['estrategia-empresarial', 'experiencia-cliente', 'suporte-ti', 'sustentabilidade-esg', 'treinamento-desenvolvimento', 'marketing', 'estrategia', 'consultoria-esg', 'treinamento'].map((slug) => ({ params: { slug } }));
+}
+
+const { slug } = Astro.params;
+const titulo = slug ? slug.split('-').map((s) => s.charAt(0).toUpperCase() + s.slice(1)).join(' ') : 'Serviço';
+---
+
+<BaseLayout title={`${titulo} | ${siteConfig.siteName}`} description={`Conheça nosso serviço de ${titulo}.`}>
+  <article>
+    <section class="py-16 px-6 bg-[#0c1e21] text-white">
+      <div class="max-w-4xl mx-auto text-center">
+        <PageBreadcrumb title={titulo} />
+        <h1 class="text-4xl font-bold mt-4">{titulo}</h1>
+      </div>
+    </section>
+
+    <section class="py-20 px-6 bg-white">
+      <div class="max-w-4xl mx-auto">
+        <img src={IMG('img-020.webp')} alt="" class="w-full aspect-video object-cover rounded-lg mb-8" />
+        <div class="prose prose-[#364e52] max-w-none">
+          <p class="text-lg">Oferecemos soluções personalizadas para impulsionar o crescimento do seu negócio. Nossa abordagem combina análise de dados, estratégias inovadoras e acompanhamento contínuo.</p>
+          <h2 class="text-xl font-bold text-[#0c1e21] mt-8">O que incluímos</h2>
+          <ul class="list-disc pl-6 space-y-2">
+            <li>Diagnóstico e análise inicial</li>
+            <li>Plano de ação personalizado</li>
+            <li>Implementação com suporte</li>
+            <li>Relatórios e acompanhamento</li>
+          </ul>
+          <div class="mt-12">
+            <a href="/contato" class="inline-flex items-center gap-2 px-8 py-4 bg-[#1e8a8a] hover:bg-[#1a7777] text-white font-semibold rounded transition-colors">
+              Solicitar Orçamento
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="py-12 px-6 bg-[#d8e5e5]">
+      <div class="max-w-4xl mx-auto text-center">
+        <a href="/servicos" class="text-[#1e8a8a] font-semibold hover:underline">← Voltar para Serviços</a>
+      </div>
+    </section>
+  </article>
+</BaseLayout>

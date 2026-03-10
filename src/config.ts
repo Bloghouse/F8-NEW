@@ -1,49 +1,30 @@
 /**
- * Configuração - tema Mivon Creative Agency (baseado em referência extraída)
- * Multi-Purpose portfolio / Creative agency
+ * Configuração central do site PBN 8links - Template Porto Marketing
+ * Nav agrupada para UX: máximo 5-7 itens no header, resto no dropdown "Mais"
  */
 export const siteConfig = {
-  name: 'Mivon',
-  siteName: 'Mivon',
-  description: 'Mivon - Multi-Purpose portfolio HTML5 Template. Creating timeless brands that inspire.',
-  siteDescription: 'Multi-Purpose portfolio & creative agency. Creating timeless brands that inspire.',
+  name: 'Meu Site',
+  siteName: 'Meu Site',
+  description: 'Marketing digital e estratégias inovadoras. Impulsionamos marcas além das expectativas.',
+  siteDescription: 'Marketing digital e estratégias inovadoras. Impulsionamos marcas além das expectativas.',
   url: 'https://meu-site.vercel.app',
-  author: 'Mivon',
-  primaryNiche: 'Creative Agency',
-  secondaryNiche: 'Portfolio',
-  tertiaryNiche: 'Branding',
-  email: 'hello@Mivon.com',
-  contactEmail: 'hello@Mivon.com',
-  aboutDescription: 'Somos uma agência independente de design web e branding. Creating timeless brands that inspire.',
-  social: {
-    twitter: '#',
-    linkedin: '#',
-    facebook: '#',
-    instagram: '#',
-  },
+  author: 'Meu Site',
+  primaryNiche: 'Marketing Digital',
+  aboutDescription: 'Estratégias inovadoras para crescimento sustentável.',
+  contactEmail: 'contato@meusite.com',
+  /** Menu principal - prioriza Início, Sobre, Serviços, Cases, Contato (≤7 itens) */
   nav: [
-    { label: 'Home', href: '/' },
-    { label: 'Pages', href: '/about' },
-    { label: 'Works', href: '/works' },
-    { label: 'Blogs', href: '/blog' },
-    { label: 'Contact Us', href: '/contact' },
+    { label: 'Início', href: '/' },
+    { label: 'Sobre', href: '/sobre' },
+    { label: 'Serviços', href: '/servicos' },
+    { label: 'Processo', href: '/processo' },
+    { label: 'Cases', href: '/cases' },
+    { label: 'Contato', href: '/contato' },
   ],
-  services: [
-    { title: 'Product design', description: 'Curabitur mollis bibendum luctus.' },
-    { title: 'Web design', description: 'Curabitur mollis bibendum luctus.' },
-    { title: 'Seo & Marketing', description: 'Curabitur mollis bibendum luctus.' },
-    { title: 'Branding', description: 'Curabitur mollis bibendum luctus.' },
-  ],
-  portfolio: [
-    { title: 'Kantha', tags: ['Branding', 'Development'] },
-    { title: 'Matts Studios', tags: ['Web design', 'Branding'] },
-    { title: 'Inkzio Branding', tags: ['Branding', 'Mobile app'] },
-    { title: 'Wizard illustrations', tags: ['Development', 'Social media'] },
-  ],
-  stats: [
-    { value: '98%', label: 'Satisfied customers' },
-    { value: '2k+', label: 'Product launch' },
-    { value: '35+', label: 'Years experience' },
+  /** Itens secundários - rodapé ou dropdown "Mais" */
+  navSecondary: [
+    { label: 'Equipe', href: '/equipe' },
+    { label: 'Portfolio', href: '/portfolio' },
   ],
 } as const;
 

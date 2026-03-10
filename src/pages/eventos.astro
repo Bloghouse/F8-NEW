@@ -1,0 +1,63 @@
+---
+/**
+ * Página Eventos - baseada em public/reference/events.html/
+ * Calendário e lista de eventos do template Melanie Hanson
+ * Imagens: /reference/events.html/images/
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { siteConfig } from '../config';
+
+const IMG = (f: string) => `/reference/events.html/images/${f}`;
+
+const weekdays = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
+const month = 'Janeiro 2025';
+---
+
+<BaseLayout
+  title={`Eventos | ${siteConfig.siteName}`}
+  description="Calendário de eventos e workshops de saúde e bem-estar."
+>
+  <article class="eventos-page">
+    <section class="py-20 px-6 bg-white text-gray-800">
+      <div class="max-w-4xl mx-auto text-center">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">Eventos</h1>
+        <nav class="text-sm text-gray-500">
+          <a href="/" class="text-[#efa758] hover:underline">Início</a>
+          <span class="mx-2">/</span>
+          <span>Eventos</span>
+        </nav>
+      </div>
+    </section>
+
+    <section class="py-12 px-6 bg-gray-50">
+      <div class="max-w-4xl mx-auto">
+        <div class="flex items-center justify-between mb-8">
+          <h2 class="text-2xl font-bold">{month}</h2>
+          <div class="flex gap-4">
+            <a href="#" class="text-[#efa758] hover:underline">← Dezembro</a>
+            <a href="#" class="text-[#efa758] hover:underline">Fevereiro →</a>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl overflow-hidden border border-gray-200">
+          <div class="grid grid-cols-7 text-center bg-gray-100 font-semibold py-3 text-gray-700">
+            {weekdays.map((d) => (
+              <span>{d}</span>
+            ))}
+          </div>
+          <div class="grid grid-cols-7 gap-px bg-gray-200 p-px">
+            {Array.from({ length: 35 }, (_, i) => (
+              <div class="aspect-square bg-white flex items-center justify-center text-gray-600 text-sm min-h-[60px]">
+                {i >= 2 && i < 32 ? i - 1 : ''}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <nav class="py-8 px-6 text-center">
+      <a href="/" class="text-[#efa758] hover:underline">← Voltar ao Início</a>
+    </nav>
+  </article>
+</BaseLayout>

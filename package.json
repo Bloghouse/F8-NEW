@@ -2,19 +2,32 @@
   "name": "8links-pbn-boilerplate",
   "type": "module",
   "version": "1.0.0",
-  "description": "Boilerplate Astro para sites PBN compatíveis com 8links - estrutura de blog com Content Collections",
+  "description": "Boilerplate Astro para sites PBN - captura referência (screenshots + HTML/CSS) de URLs e cria tema a partir disso",
   "scripts": {
-    "dev": "astro dev",
+    "dev": "concurrently \"bun run capture-api\" \"wait-on tcp:127.0.0.1:3001 --timeout 10000 && astro dev\"",
+    "dev:astro": "astro dev",
+    "dev:full": "bun run dev",
+    "capture-api": "bun run scripts/capture-server.ts",
+    "download-images": "bun run scripts/download-images.ts",
+    "kill-ports": "for p in 3001 4321; do lsof -ti :$p 2>/dev/null | xargs kill -9 2>/dev/null; done; echo Portas 3001 e 4321 encerradas",
+    "dev:fresh": "bun run kill-ports && sleep 2 && bun run dev",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "export-site": "bun run scripts/export-site.ts",
+    "reset": "bun run scripts/reset.ts",
+    "check-links": "bun run build && bun run scripts/check-links.ts"
   },
   "dependencies": {
+    "@astrojs/sitemap": "^3.7.0",
     "astro": "^4.16.0"
   },
   "devDependencies": {
     "@astrojs/tailwind": "^5.1.0",
     "@astrojs/vercel": "^7.4.0",
     "@tailwindcss/typography": "^0.5.16",
+    "concurrently": "^9.1.0",
+    "wait-on": "^7.2.0",
+    "puppeteer": "^23.0.0",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.6.0"
   }

@@ -1,0 +1,24 @@
+---
+/**
+ * Página 404 - Erro Não Encontrado
+ * Baseada em public/reference/html-bexon-demo-error.html/
+ * Rota: /404 (também servida automaticamente pelo Astro para rotas inexistentes)
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { siteConfig } from '../config';
+
+const REF = 'html-bexon-demo-error.html';
+const IMG = (file: string) => `/reference/${REF}/images/${file}`;
+---
+
+<BaseLayout title={`Página não encontrada | ${siteConfig.siteName}`} description="A página que você procura não existe.">
+  <section class="min-h-[70vh] flex flex-col items-center justify-center px-6 py-20 text-center">
+    <div class="text-8xl font-bold text-[#1e8a8a]">404</div>
+    <h1 class="text-2xl md:text-3xl font-bold text-white mt-4">Página não encontrada</h1>
+    <p class="text-white/70 mt-4 max-w-md">Desculpe, a página que você está procurando não existe ou foi movida.</p>
+    <a href="/" class="mt-8 inline-flex items-center gap-2 px-8 py-4 bg-[#1e8a8a] hover:bg-[#1a7777] text-white font-semibold rounded transition-colors">
+      Voltar ao Início
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+    </a>
+  </section>
+</BaseLayout>

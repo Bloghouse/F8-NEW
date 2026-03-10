@@ -1,0 +1,35 @@
+---
+/**
+ * Página Termos e Condições
+ * Baseada em public/reference/html-bexon-demo-terms-and-conditions.html/
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageBreadcrumb from '../components/PageBreadcrumb.astro';
+import { siteConfig } from '../config';
+
+const REF = 'html-bexon-demo-terms-and-conditions.html';
+---
+
+<BaseLayout title={`Termos e Condições | ${siteConfig.siteName}`} description="Termos e condições de uso do site."}>
+  <article>
+    <section class="py-16 px-6 bg-[#0c1e21] text-white">
+      <div class="max-w-4xl mx-auto text-center">
+        <PageBreadcrumb title="Termos e Condições" />
+        <h1 class="text-4xl font-bold mt-4">Termos e Condições</h1>
+      </div>
+    </section>
+
+    <section class="py-20 px-6 bg-white">
+      <div class="max-w-3xl mx-auto prose prose-[#364e52]">
+        <h2 class="text-xl font-bold text-[#0c1e21]">1. Aceitação dos Termos</h2>
+        <p class="text-[#364e52]">Ao acessar e usar este site, você concorda em cumprir e estar vinculado a estes termos e condições de uso.</p>
+        <h2 class="text-xl font-bold text-[#0c1e21] mt-8">2. Uso do Site</h2>
+        <p class="text-[#364e52]">O conteúdo deste site é fornecido apenas para fins informativos. Você não pode usar o site para qualquer propósito ilegal ou não autorizado.</p>
+        <h2 class="text-xl font-bold text-[#0c1e21] mt-8">3. Propriedade Intelectual</h2>
+        <p class="text-[#364e52]">Todo o conteúdo, incluindo textos, imagens e design, é de propriedade de {siteConfig.siteName} ou de seus licenciadores e está protegido por leis de direitos autorais.</p>
+        <h2 class="text-xl font-bold text-[#0c1e21] mt-8">4. Contato</h2>
+        <p class="text-[#364e52]">Para dúvidas sobre estes termos, entre em <a href="/contato" class="text-[#1e8a8a] hover:underline">contato</a> conosco.</p>
+      </div>
+    </section>
+  </article>
+</BaseLayout>

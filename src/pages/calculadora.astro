@@ -1,0 +1,80 @@
+---
+/**
+ * Página Calculadora de Peso Ideal - baseada em public/reference/calculator.html/
+ * Calculadora IMC/peso ideal do template Melanie Hanson
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { siteConfig } from '../config';
+
+const reasons = [
+  'A maioria dos participantes perde 2-2,5 kg nos primeiros 5 dias, e 2-7 kg no total após 30 dias.',
+  'Aprenda a controlar desejos, fome e alterações de humor equilibrando seu açúcar no sangue.',
+  'Alcance uma pele mais saudável, clara e radiante com detox e nutrição adequada.',
+  'Aumente sua energia e foco durante o dia.',
+  'Tenha um sono mais reparador à noite.',
+  'Entenda alimentação saudável, nutrição adequada e quais suplementos tomar.',
+  'Economize na compra com nossos smoothies e barras saudáveis e deliciosos.',
+  'Seja mais produtivo em casa, no trabalho e nos negócios construindo confiança.',
+];
+---
+
+<BaseLayout
+  title={`Calculadora de Peso Ideal | ${siteConfig.siteName}`}
+  description="Calcule seu peso ideal com base na altura e sexo."
+>
+  <article class="calculadora-page">
+    <section class="py-20 px-6 bg-gray-800 text-white">
+      <div class="max-w-2xl mx-auto">
+        <h1 class="text-4xl font-bold mb-4">Calculadora de Peso Ideal</h1>
+        <p class="text-gray-300 mb-8">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud.</p>
+
+        <form class="space-y-6 p-6 bg-gray-900/50 rounded-xl">
+          <div>
+            <label for="height" class="block text-sm font-medium text-gray-300 mb-2">Altura (cm)</label>
+            <input type="number" id="height" name="height" min="30" max="250" value="170" class="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded text-white focus:ring-2 focus:ring-[#efa758]" />
+          </div>
+          <div>
+            <label for="sex" class="block text-sm font-medium text-gray-300 mb-2">Sexo</label>
+            <select id="sex" name="sex" class="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded text-white focus:ring-2 focus:ring-[#efa758]">
+              <option value="M">Masculino</option>
+              <option value="F">Feminino</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-300 mb-2">Peso Ideal (aprox.)</label>
+            <p class="text-2xl font-bold text-[#efa758]" id="result">—</p>
+          </div>
+          <button type="button" id="calc-btn" class="px-6 py-3 bg-[#efa758] hover:bg-[#e09540] text-gray-900 font-semibold rounded transition">Calcular</button>
+        </form>
+        <script>
+          document.getElementById('calc-btn')?.addEventListener('click', () => {
+            const h = parseInt(document.getElementById('height')?.value || '170', 10);
+            const sex = document.getElementById('sex')?.value;
+            const imc = 22;
+            const ideal = Math.round(((h/100)**2) * imc);
+            document.getElementById('result').textContent = ideal + ' kg';
+          });
+        </script>
+      </div>
+    </section>
+
+    <section class="py-20 px-6 bg-white text-gray-800">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-3xl font-bold text-center mb-4">10 Principais Motivos para se Juntar a Mim</h2>
+        <p class="text-[#efa758] text-sm uppercase tracking-widest text-center mb-12">Você Quer Mudar Sua Vida</p>
+        <ul class="grid md:grid-cols-2 gap-4 list-none">
+          {reasons.map((r) => (
+            <li class="flex items-start gap-3">
+              <span class="text-[#efa758] mt-1">✓</span>
+              <span class="text-gray-600">{r}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <nav class="py-8 px-6 text-center">
+      <a href="/" class="text-[#efa758] hover:underline">← Voltar ao Início</a>
+    </nav>
+  </article>
+</BaseLayout>

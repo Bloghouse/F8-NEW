@@ -1,0 +1,55 @@
+---
+/**
+ * Página Detalhe da Equipe - Team Details
+ * Baseada em public/reference/html-bexon-demo-team-details.html/
+ * Rota: /equipe/[slug]
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageBreadcrumb from '../../components/PageBreadcrumb.astro';
+import { siteConfig } from '../../config';
+
+const REF = 'html-bexon-demo-team-details.html';
+const IMG = (file: string) => `/reference/${REF}/images/${file}`;
+
+export function getStaticPaths() {
+  return ['eade-marren', 'savannah-ngueen', 'kristin-watson', 'darlene-robertson', 'john', 'jane', 'mike', 'sarah'].map((slug) => ({ params: { slug } }));
+}
+
+const { slug } = Astro.params;
+const membro = {
+  nome: slug ? slug.split('-').map((s) => s.charAt(0).toUpperCase() + s.slice(1)).join(' ') : 'Membro',
+  cargo: 'Diretor Executivo',
+  bio: 'Líder com mais de 15 anos de experiência em transformação empresarial. Comprometido em entregar resultados excepcionais e construir parcerias de longo prazo.',
+  img: 'img-001.webp',
+};
+---
+
+<BaseLayout title={`${membro.nome} | ${siteConfig.siteName}`} description={membro.bio}>
+  <article>
+    <section class="py-16 px-6 bg-[#0c1e21] text-white">
+      <div class="max-w-4xl mx-auto">
+        <PageBreadcrumb title={membro.nome} />
+        <div class="flex flex-col md:flex-row gap-12 mt-8">
+          <div class="md:w-80 flex-shrink-0">
+            <img src={IMG('img-001.webp')} alt={membro.nome} class="w-full aspect-square object-cover rounded-lg" />
+          </div>
+          <div>
+            <h1 class="text-3xl font-bold">{membro.nome}</h1>
+            <p class="text-[#1e8a8a] font-semibold mt-2">{membro.cargo}</p>
+            <p class="text-white/80 mt-6">{membro.bio}</p>
+            <div class="flex gap-4 mt-6">
+              <a href="mailto:contato@meusite.com" class="text-[#1e8a8a] hover:underline">E-mail</a>
+              <a href="https://linkedin.com" target="_blank" rel="noopener" class="text-[#1e8a8a] hover:underline">LinkedIn</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-12 px-6 bg-white">
+      <div class="max-w-4xl mx-auto text-center">
+        <a href="/equipe" class="text-[#1e8a8a] font-semibold hover:underline">← Voltar para Equipe</a>
+      </div>
+    </section>
+  </article>
+</BaseLayout>

@@ -10,6 +10,9 @@ dist/
 .env.*
 !.env.example
 
+# Credenciais (nunca commitar)
+data/credentials.json
+
 # IDE
 .idea/
 .vscode/
@@ -23,4 +26,12 @@ Thumbs.db
 # Logs
 *.log
 npm-debug.log*
+
+# .git de cada site (cada site pode ter seu repo para deploy separado)
+sites/*/.git/
+
+# Referências capturadas (screenshots, HTML, CSS)
+public/reference/
+**/public/reference/
+sites/*/public/reference/
 

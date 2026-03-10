@@ -1,0 +1,108 @@
+---
+/**
+ * Página História - Company History
+ * Baseada em public/reference/html-bexon-demo-history.html/
+ * Discover how we have Evolved our Company's Legacy
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageBreadcrumb from '../components/PageBreadcrumb.astro';
+import { siteConfig } from '../config';
+
+const REF = 'html-bexon-demo-history.html';
+const IMG = (file: string) => `/reference/${REF}/images/${file}`;
+---
+
+<BaseLayout title={`História | ${siteConfig.siteName}`} description="Conheça a trajetória da nossa empresa e como evoluímos ao longo dos anos.">
+  <article>
+    <section class="py-16 px-6 bg-[#0c1e21] text-white">
+      <div class="max-w-4xl mx-auto text-center">
+        <PageBreadcrumb title="História" />
+        <h1 class="text-4xl font-bold mt-4">História da Empresa</h1>
+      </div>
+    </section>
+
+    <section class="py-20 px-6 bg-white">
+      <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-12">
+        <div>
+          <span class="text-sm uppercase tracking-widest text-[#1e8a8a]">Nosso background</span>
+          <h2 class="text-2xl md:text-3xl font-bold text-[#0c1e21] mt-2">Descubra como Evoluímos a Legado da Nossa Empresa.</h2>
+        </div>
+        <div>
+          <p class="text-[#364e52] mb-4">Nossa missão é capacitar empresas de todos os portes a prosperar em um mercado em constante mudança. Comprometidos em entregar valor excepcional através de insights estratégicos e abordagens inovadoras.</p>
+          <p class="text-[#364e52] mb-6">Comprometidos em entregar valor excepcional através de nossos insights estratégicos e abordagens inovadoras para capacitar.</p>
+          <a href="/sobre" class="inline-flex items-center gap-2 px-8 py-4 bg-[#1e8a8a] hover:bg-[#1a7777] text-white font-semibold rounded transition-colors">
+            Saiba mais
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-20 px-6 bg-[#d8e5e5]">
+      <div class="max-w-4xl mx-auto">
+        <div class="space-y-12">
+          <div class="flex gap-8">
+            <div class="flex-shrink-0 w-24 text-center">
+              <span class="text-2xl font-bold text-[#1e8a8a]">2008</span>
+            </div>
+            <div class="flex-1 pb-8 border-l-2 border-[#1e8a8a] pl-8 -ml-0.5">
+              <span class="text-sm text-[#1e8a8a] font-semibold">01.</span>
+              <h3 class="font-bold text-[#0c1e21] mt-1 mb-2">Fundação e Primeiros Anos</h3>
+              <p class="text-[#364e52] text-sm">Nossa missão é capacitar empresas de todos os portes a prosperar em um mercado em constante mudança.</p>
+            </div>
+          </div>
+          <div class="flex gap-8">
+            <div class="flex-shrink-0 w-24 text-center">
+              <span class="text-2xl font-bold text-[#1e8a8a]">2012</span>
+            </div>
+            <div class="flex-1 pb-8 border-l-2 border-[#1e8a8a] pl-8 -ml-0.5">
+              <span class="text-sm text-[#1e8a8a] font-semibold">02.</span>
+              <h3 class="font-bold text-[#0c1e21] mt-1 mb-2">Expansão e Crescimento</h3>
+              <p class="text-[#364e52] text-sm">Ampliamos nossas operações e conquistamos novos mercados com soluções inovadoras.</p>
+            </div>
+          </div>
+          <div class="flex gap-8">
+            <div class="flex-shrink-0 w-24 text-center">
+              <span class="text-2xl font-bold text-[#1e8a8a]">2016</span>
+            </div>
+            <div class="flex-1 pb-8 border-l-2 border-[#1e8a8a] pl-8 -ml-0.5">
+              <span class="text-sm text-[#1e8a8a] font-semibold">03.</span>
+              <h3 class="font-bold text-[#0c1e21] mt-1 mb-2">Inovação e Liderança de Mercado</h3>
+              <p class="text-[#364e52] text-sm">Consolidamos nossa posição como referência em inovação e excelência.</p>
+            </div>
+          </div>
+          <div class="flex gap-8">
+            <div class="flex-shrink-0 w-24 text-center">
+              <span class="text-2xl font-bold text-[#1e8a8a]">2020</span>
+            </div>
+            <div class="flex-1 pb-8 border-l-2 border-[#1e8a8a] pl-8 -ml-0.5">
+              <span class="text-sm text-[#1e8a8a] font-semibold">04.</span>
+              <h3 class="font-bold text-[#0c1e21] mt-1 mb-2">Expansão Global e Diversificação</h3>
+              <p class="text-[#364e52] text-sm">Expandimos globalmente e diversificamos nosso portfólio de serviços.</p>
+            </div>
+          </div>
+          <div class="flex gap-8">
+            <div class="flex-shrink-0 w-24 text-center">
+              <span class="text-2xl font-bold text-[#1e8a8a]">2024</span>
+            </div>
+            <div class="flex-1 border-l-2 border-[#1e8a8a] pl-8 -ml-0.5">
+              <span class="text-sm text-[#1e8a8a] font-semibold">05.</span>
+              <h3 class="font-bold text-[#0c1e21] mt-1 mb-2">Olhando para o Futuro</h3>
+              <p class="text-[#364e52] text-sm">Continuamos investindo em inovação e preparando o amanhã.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-16 px-6 bg-[#1e8a8a] text-white text-center">
+      <div class="max-w-2xl mx-auto">
+        <h2 class="text-2xl font-bold mb-4">Vamos Construir o Futuro Juntos.</h2>
+        <a href="/contato" class="inline-flex items-center gap-2 px-8 py-4 bg-white text-[#1e8a8a] font-semibold rounded hover:bg-gray-100 transition-colors">
+          Comece Agora
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+        </a>
+      </div>
+    </section>
+  </article>
+</BaseLayout>

@@ -1,0 +1,13 @@
+---
+/**
+ * Redirect: /quem-somos → /sobre
+ * Alias da página Sobre (Who We Are)
+ */
+export const prerender = true;
+---
+
+<meta http-equiv="refresh" content="0;url=/sobre" />
+<script>
+  window.location.href = '/sobre';
+</script>
+<p>Redirecionando para <a href="/sobre">Sobre</a>...</p>

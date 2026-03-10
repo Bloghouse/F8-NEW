@@ -1,0 +1,59 @@
+---
+/**
+ * Página Carreiras - Careers
+ * Baseada em public/reference/html-bexon-demo-careers.html/
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageBreadcrumb from '../components/PageBreadcrumb.astro';
+import { siteConfig } from '../config';
+
+const REF = 'html-bexon-demo-careers.html';
+const IMG = (file: string) => `/reference/${REF}/images/${file}`;
+
+const vagas = [
+  { titulo: 'Diretor de Estratégia', local: 'São Paulo', tipo: 'Tempo integral', slug: 'diretor-estrategia' },
+  { titulo: 'Analista de Marketing', local: 'Remoto', tipo: 'Tempo integral', slug: 'analista-marketing' },
+  { titulo: 'Desenvolvedor Full Stack', local: 'São Paulo', tipo: 'Híbrido', slug: 'desenvolvedor-fullstack' },
+  { titulo: 'Consultor de ESG', local: 'Remoto', tipo: 'Tempo integral', slug: 'consultor-esg' },
+];
+---
+
+<BaseLayout title={`Carreiras | ${siteConfig.siteName}`} description="Junte-se à nossa equipe. Veja as vagas abertas.">
+  <article>
+    <section class="py-16 px-6 bg-[#0c1e21] text-white">
+      <div class="max-w-4xl mx-auto text-center">
+        <PageBreadcrumb title="Carreiras" />
+        <h1 class="text-4xl font-bold mt-4">Carreiras</h1>
+        <p class="text-white/80 mt-4">Junte-se à nossa equipe e faça a diferença</p>
+      </div>
+    </section>
+
+    <section class="py-20 px-6 bg-white">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-2xl font-bold text-[#0c1e21] mb-8">Vagas Abertas</h2>
+        <div class="space-y-4">
+          {vagas.map((v) => (
+            <a href={`/carreiras/${v.slug}`} class="block p-6 rounded-lg border border-[#d8e5e5] hover:border-[#1e8a8a] hover:bg-[#d8e5e5]/30 transition-colors">
+              <h3 class="font-bold text-[#0c1e21]">{v.titulo}</h3>
+              <div class="flex flex-wrap gap-4 mt-2 text-sm text-[#364e52]">
+                <span>{v.local}</span>
+                <span>{v.tipo}</span>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="py-16 px-6 bg-[#d8e5e5]">
+      <div class="max-w-2xl mx-auto text-center">
+        <h2 class="text-2xl font-bold text-[#0c1e21] mb-4">Não encontrou a vaga ideal?</h2>
+        <p class="text-[#364e52] mb-6">Envie seu currículo e nós entraremos em contato quando surgir uma oportunidade.</p>
+        <a href="/contato" class="inline-flex items-center gap-2 px-8 py-4 bg-[#1e8a8a] hover:bg-[#1a7777] text-white font-semibold rounded transition-colors">
+          Enviar Currículo
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+        </a>
+      </div>
+    </section>
+  </article>
+</BaseLayout>

@@ -1,0 +1,32 @@
+---
+/**
+ * PageBreadcrumb - breadcrumb de navegação em páginas internas
+ * Exibe: Início > Nome da página atual
+ * Suporta items (array) ou title (string, gera Início > title)
+ */
+interface Props {
+  items?: { label: string; href?: string }[];
+  title?: string; // legado: gera Início > title
+}
+
+const { items, title } = Astro.props;
+const breadcrumbItems: { label: string; href?: string }[] =
+  items && items.length > 0
+    ? items
+    : title
+      ? [{ label: 'Início', href: '/' }, { label: title }]
+      : [{ label: 'Início', href: '/' }];
+---
+
+<nav aria-label="Breadcrumb" class="flex flex-wrap gap-2 text-sm text-[var(--color-body-2)]">
+  {breadcrumbItems.map((item, i) => (
+    <span class="flex items-center gap-2">
+      {i > 0 && <span aria-hidden="true">/</span>}
+      {item.href ? (
+        <a href={item.href} class="hover:text-[var(--color-accent)] transition-colors">{item.label}</a>
+      ) : (
+        <span class="text-white">{item.label}</span>
+      )}
+    </span>
+  ))}
+</nav>

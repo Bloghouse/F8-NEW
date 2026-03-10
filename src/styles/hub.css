@@ -1,0 +1,48 @@
+/**
+ * Estilos FIXOS da Central de Criação (hub + wizard)
+ * NÃO alterar - usado apenas pelo painel. Os sites usam seus próprios estilos em sites/[nome]/src/styles/
+ */
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --hub-bg: #0f0f0f;
+  --hub-bg-elevated: #1a1a1a;
+  --hub-text: #ffffff;
+  --hub-text-muted: rgba(255, 255, 255, 0.85);
+  --hub-accent: #6b39f4;
+  --hub-accent-hover: #5a2dd9;
+  --hub-border: rgba(255, 255, 255, 0.1);
+  --hub-font-display: 'Lexend', 'Poppins', system-ui, sans-serif;
+  --hub-font-body: 'Poppins', system-ui, sans-serif;
+}
+
+/* Aliases para compatibilidade com classes existentes no hub */
+:root {
+  --color-bg: var(--hub-bg);
+  --color-bg-elevated: var(--hub-bg-elevated);
+  --color-text: var(--hub-text);
+  --color-accent: var(--hub-accent);
+  --color-accent-hover: var(--hub-accent-hover);
+  --color-border: var(--hub-border);
+  --font-display: var(--hub-font-display);
+  --font-body: var(--hub-font-body);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--hub-font-body);
+  background: var(--hub-bg);
+  color: var(--hub-text);
+  line-height: 1.6;
+}
+
+.font-display {
+  font-family: var(--hub-font-display);
+}

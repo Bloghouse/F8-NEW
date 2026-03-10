@@ -1,0 +1,42 @@
+---
+/**
+ * Página Programas - baseada em public/reference/programs.html/
+ * Programas de coaching do template Melanie Hanson
+ * Imagens: /reference/programs.html/images/img-XXX.ext
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { siteConfig } from '../config';
+
+const IMG = (f: string) => `/reference/programs.html/images/${f}`;
+---
+
+<BaseLayout
+  title={`Programas | ${siteConfig.siteName}`}
+  description="Programas de coaching de bem-estar. Wellness Coaching Programs."
+>
+  <article class="programas-page">
+    <section class="py-20 px-6 bg-white text-gray-800">
+      <div class="max-w-4xl mx-auto text-center">
+        <h1 class="text-4xl md:text-5xl font-bold mb-6">Programas de Coaching de Bem-estar</h1>
+        <blockquote class="text-xl text-gray-600 italic mb-12">
+          "Lorem ipsum dolor sit amet, definiebas conclusionemque et cum. Tota omnes volumus id quo.
+          Ei reque oportere interpretaris sed, ut decore ignota quo. Nihil nominavi ex sit. Cum ignota labores." – Mark Hyman, MD
+        </blockquote>
+      </div>
+    </section>
+
+    <section class="py-12 px-6 bg-gray-50">
+      <div class="max-w-6xl mx-auto">
+        <div class="grid md:grid-cols-3 gap-8">
+          <img src={IMG('img-002.jpg')} alt="Programa 1" class="w-full aspect-square object-cover rounded-lg" />
+          <img src={IMG('img-003.jpg')} alt="Programa 2" class="w-full aspect-square object-cover rounded-lg" />
+          <img src={IMG('img-004.jpg')} alt="Programa 3" class="w-full aspect-square object-cover rounded-lg" />
+        </div>
+      </div>
+    </section>
+
+    <nav class="py-8 px-6 text-center">
+      <a href="/" class="text-[#efa758] hover:underline">← Voltar ao Início</a>
+    </nav>
+  </article>
+</BaseLayout>
