@@ -850,9 +850,20 @@ import WizardLayout from '../layouts/WizardLayout.astro';
       btn.disabled = false;
     });
 
-    document.getElementById('go-step-2')?.addEventListener('click', () => {
+    document.getElementById('go-step-2')?.addEventListener('click', async () => {
       const container = document.getElementById('pages-describe');
       if (!container) return;
+      const slug = localStorage.getItem(STORAGE_KEY) || slugify(document.getElementById('current-project-name')?.textContent || 'site');
+      const btn = document.getElementById('go-step-2');
+      if (btn) { btn.disabled = true; btn.textContent = 'Sincronizando referências...'; }
+      try {
+        await fetch(`${apiUrl}/api/sites/prepare`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: slug }),
+        });
+      } catch (_) {}
+      if (btn) { btn.disabled = false; btn.textContent = 'Próximo: Briefing →'; }
       container.innerHTML = capturedPages.map((p) => `
         <div class="p-4 rounded-xl bg-[var(--color-bg-elevated)] border border-[var(--color-border)]">
           <label class="block text-sm font-medium text-white/90 mb-2">${p.slug}</label>
