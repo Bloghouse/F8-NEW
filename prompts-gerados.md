@@ -2,188 +2,200 @@
 Execute em ordem no Cursor. Aguarde cada etapa antes da próxima.
 
 ⚠️ ISOLAMENTO OBRIGATÓRIO:
-- DIRETÓRIO DO PROJETO: sites/digilinks/
-- Crie e edite APENAS arquivos dentro de sites/digilinks/
+- DIRETÓRIO DO PROJETO: sites/techai/
+- Crie e edite APENAS arquivos dentro de sites/techai/
 - NUNCA modifique: f8/src/ (hub), f8/src/styles/hub.css, f8/src/layouts/WizardLayout.astro
-- Cada site é isolado. Blog, conteúdo e assets ficam em sites/digilinks/ apenas.
+- Cada site é isolado. Blog, conteúdo e assets ficam em sites/techai/ apenas.
 
---- PROMPT 1/15: Construção página 1 ---
-Com base em public/reference/item-digilink-digital-marketing-agency-html-template-full_screen_preview-61810867/, crie a página em sites/digilinks/src/pages/.
+--- PROMPT 1/16: Construção página 1 ---
+Com base em public/reference/aior-demo-home-ai-chatbot.html/, crie a página em sites/techai/src/pages/.
 
 INSTRUÇÕES: Manter a estrutura original da referência, apenas traduzir e adaptar ao briefing. Manter as cores da referência. Todo conteúdo em português. Manter 100% fiel à referência, apenas trocar textos.
 
 ESTA PÁGINA: Seguir a referência.
 
 Use page.html e styles.css como base.
-IMAGENS: Use placeholders (picsum.photos, Unsplash) onde necessário.
+IMAGENS: Use public/reference/aior-demo-home-ai-chatbot.html/images/ (images.json). No Astro: src="/reference/aior-demo-home-ai-chatbot.html/images/img-XXX.ext"
 
 Astro + Tailwind. HTML semântico e responsivo.
 
---- PROMPT 2/15: Construção página 2 ---
-Com base em public/reference/2025-digilink-html-page-about.html/, crie a página em sites/digilinks/src/pages/.
+--- PROMPT 2/16: Construção página 2 ---
+Com base em public/reference/aior-demo-about.html/, crie a página em sites/techai/src/pages/.
 
 INSTRUÇÕES: Manter a estrutura original da referência, apenas traduzir e adaptar ao briefing. Manter as cores da referência. Todo conteúdo em português. Manter 100% fiel à referência, apenas trocar textos.
 
 ESTA PÁGINA: Seguir a referência.
 
 Use page.html e styles.css como base.
-IMAGENS: Use public/reference/2025-digilink-html-page-about.html/images/ (images.json). No Astro: src="/reference/2025-digilink-html-page-about.html/images/img-XXX.ext"
+IMAGENS: Use public/reference/aior-demo-about.html/images/ (images.json). No Astro: src="/reference/aior-demo-about.html/images/img-XXX.ext"
 
 Astro + Tailwind. HTML semântico e responsivo.
 
---- PROMPT 3/15: Construção página 3 ---
-Com base em public/reference/2025-digilink-html-page-projects.html/, crie a página em sites/digilinks/src/pages/.
+--- PROMPT 3/16: Construção página 3 ---
+Com base em public/reference/aior-demo-features.html/, crie a página em sites/techai/src/pages/.
 
 INSTRUÇÕES: Manter a estrutura original da referência, apenas traduzir e adaptar ao briefing. Manter as cores da referência. Todo conteúdo em português. Manter 100% fiel à referência, apenas trocar textos.
 
 ESTA PÁGINA: Seguir a referência.
 
 Use page.html e styles.css como base.
-IMAGENS: Use public/reference/2025-digilink-html-page-projects.html/images/ (images.json). No Astro: src="/reference/2025-digilink-html-page-projects.html/images/img-XXX.ext"
+IMAGENS: Use public/reference/aior-demo-features.html/images/ (images.json). No Astro: src="/reference/aior-demo-features.html/images/img-XXX.ext"
 
 Astro + Tailwind. HTML semântico e responsivo.
 
---- PROMPT 4/15: Construção página 4 ---
-Com base em public/reference/2025-digilink-html-page-project-details.html/, crie a página em sites/digilinks/src/pages/.
+--- PROMPT 4/16: Construção página 4 ---
+Com base em public/reference/aior-demo-case-studies.html/, crie a página em sites/techai/src/pages/.
 
 INSTRUÇÕES: Manter a estrutura original da referência, apenas traduzir e adaptar ao briefing. Manter as cores da referência. Todo conteúdo em português. Manter 100% fiel à referência, apenas trocar textos.
 
 ESTA PÁGINA: Seguir a referência.
 
 Use page.html e styles.css como base.
-IMAGENS: Use public/reference/2025-digilink-html-page-project-details.html/images/ (images.json). No Astro: src="/reference/2025-digilink-html-page-project-details.html/images/img-XXX.ext"
+IMAGENS: Use public/reference/aior-demo-case-studies.html/images/ (images.json). No Astro: src="/reference/aior-demo-case-studies.html/images/img-XXX.ext"
 
 Astro + Tailwind. HTML semântico e responsivo.
 
---- PROMPT 5/15: Construção página 5 ---
-Com base em public/reference/2025-digilink-html-page-team.html/, crie a página em sites/digilinks/src/pages/.
+--- PROMPT 5/16: Construção página 5 ---
+Com base em public/reference/aior-demo-case-studies-details.html/, crie a página em sites/techai/src/pages/.
 
 INSTRUÇÕES: Manter a estrutura original da referência, apenas traduzir e adaptar ao briefing. Manter as cores da referência. Todo conteúdo em português. Manter 100% fiel à referência, apenas trocar textos.
 
 ESTA PÁGINA: Seguir a referência.
 
 Use page.html e styles.css como base.
-IMAGENS: Use public/reference/2025-digilink-html-page-team.html/images/ (images.json). No Astro: src="/reference/2025-digilink-html-page-team.html/images/img-XXX.ext"
+IMAGENS: Use public/reference/aior-demo-case-studies-details.html/images/ (images.json). No Astro: src="/reference/aior-demo-case-studies-details.html/images/img-XXX.ext"
 
 Astro + Tailwind. HTML semântico e responsivo.
 
---- PROMPT 6/15: Construção página 6 ---
-Com base em public/reference/2025-digilink-html-page-team-details.html/, crie a página em sites/digilinks/src/pages/.
+--- PROMPT 6/16: Construção página 6 ---
+Com base em public/reference/aior-demo-cases.html/, crie a página em sites/techai/src/pages/.
 
 INSTRUÇÕES: Manter a estrutura original da referência, apenas traduzir e adaptar ao briefing. Manter as cores da referência. Todo conteúdo em português. Manter 100% fiel à referência, apenas trocar textos.
 
 ESTA PÁGINA: Seguir a referência.
 
 Use page.html e styles.css como base.
-IMAGENS: Use public/reference/2025-digilink-html-page-team-details.html/images/ (images.json). No Astro: src="/reference/2025-digilink-html-page-team-details.html/images/img-XXX.ext"
+IMAGENS: Use public/reference/aior-demo-cases.html/images/ (images.json). No Astro: src="/reference/aior-demo-cases.html/images/img-XXX.ext"
 
 Astro + Tailwind. HTML semântico e responsivo.
 
---- PROMPT 7/15: Construção página 7 ---
-Com base em public/reference/2025-digilink-html-page-testimonial.html/, crie a página em sites/digilinks/src/pages/.
+--- PROMPT 7/16: Construção página 7 ---
+Com base em public/reference/aior-demo-integrations.html/, crie a página em sites/techai/src/pages/.
 
 INSTRUÇÕES: Manter a estrutura original da referência, apenas traduzir e adaptar ao briefing. Manter as cores da referência. Todo conteúdo em português. Manter 100% fiel à referência, apenas trocar textos.
 
 ESTA PÁGINA: Seguir a referência.
 
 Use page.html e styles.css como base.
-IMAGENS: Use public/reference/2025-digilink-html-page-testimonial.html/images/ (images.json). No Astro: src="/reference/2025-digilink-html-page-testimonial.html/images/img-XXX.ext"
+IMAGENS: Use public/reference/aior-demo-integrations.html/images/ (images.json). No Astro: src="/reference/aior-demo-integrations.html/images/img-XXX.ext"
 
 Astro + Tailwind. HTML semântico e responsivo.
 
---- PROMPT 8/15: Construção página 8 ---
-Com base em public/reference/2025-digilink-html-page-pricing.html/, crie a página em sites/digilinks/src/pages/.
+--- PROMPT 8/16: Construção página 8 ---
+Com base em public/reference/aior-demo-team.html/, crie a página em sites/techai/src/pages/.
 
 INSTRUÇÕES: Manter a estrutura original da referência, apenas traduzir e adaptar ao briefing. Manter as cores da referência. Todo conteúdo em português. Manter 100% fiel à referência, apenas trocar textos.
 
 ESTA PÁGINA: Seguir a referência.
 
 Use page.html e styles.css como base.
-IMAGENS: Use public/reference/2025-digilink-html-page-pricing.html/images/ (images.json). No Astro: src="/reference/2025-digilink-html-page-pricing.html/images/img-XXX.ext"
+IMAGENS: Use public/reference/aior-demo-team.html/images/ (images.json). No Astro: src="/reference/aior-demo-team.html/images/img-XXX.ext"
 
 Astro + Tailwind. HTML semântico e responsivo.
 
---- PROMPT 9/15: Construção página 9 ---
-Com base em public/reference/2025-digilink-html-page-faq.html/, crie a página em sites/digilinks/src/pages/.
+--- PROMPT 9/16: Construção página 9 ---
+Com base em public/reference/aior-demo-team-details.html/, crie a página em sites/techai/src/pages/.
 
 INSTRUÇÕES: Manter a estrutura original da referência, apenas traduzir e adaptar ao briefing. Manter as cores da referência. Todo conteúdo em português. Manter 100% fiel à referência, apenas trocar textos.
 
 ESTA PÁGINA: Seguir a referência.
 
 Use page.html e styles.css como base.
-IMAGENS: Use public/reference/2025-digilink-html-page-faq.html/images/ (images.json). No Astro: src="/reference/2025-digilink-html-page-faq.html/images/img-XXX.ext"
+IMAGENS: Use public/reference/aior-demo-team-details.html/images/ (images.json). No Astro: src="/reference/aior-demo-team-details.html/images/img-XXX.ext"
 
 Astro + Tailwind. HTML semântico e responsivo.
 
---- PROMPT 10/15: Construção página 10 ---
-Com base em public/reference/2025-digilink-html-page-404.html/, crie a página em sites/digilinks/src/pages/.
+--- PROMPT 10/16: Construção página 10 ---
+Com base em public/reference/aior-demo-faq.html/, crie a página em sites/techai/src/pages/.
 
 INSTRUÇÕES: Manter a estrutura original da referência, apenas traduzir e adaptar ao briefing. Manter as cores da referência. Todo conteúdo em português. Manter 100% fiel à referência, apenas trocar textos.
 
 ESTA PÁGINA: Seguir a referência.
 
 Use page.html e styles.css como base.
-IMAGENS: Use public/reference/2025-digilink-html-page-404.html/images/ (images.json). No Astro: src="/reference/2025-digilink-html-page-404.html/images/img-XXX.ext"
+IMAGENS: Use public/reference/aior-demo-faq.html/images/ (images.json). No Astro: src="/reference/aior-demo-faq.html/images/img-XXX.ext"
 
 Astro + Tailwind. HTML semântico e responsivo.
 
---- PROMPT 11/15: Construção página 11 ---
-Com base em public/reference/2025-digilink-html-page-services.html/, crie a página em sites/digilinks/src/pages/.
+--- PROMPT 11/16: Construção página 11 ---
+Com base em public/reference/aior-demo-testimonial.html/, crie a página em sites/techai/src/pages/.
 
 INSTRUÇÕES: Manter a estrutura original da referência, apenas traduzir e adaptar ao briefing. Manter as cores da referência. Todo conteúdo em português. Manter 100% fiel à referência, apenas trocar textos.
 
 ESTA PÁGINA: Seguir a referência.
 
 Use page.html e styles.css como base.
-IMAGENS: Use public/reference/2025-digilink-html-page-services.html/images/ (images.json). No Astro: src="/reference/2025-digilink-html-page-services.html/images/img-XXX.ext"
+IMAGENS: Use public/reference/aior-demo-testimonial.html/images/ (images.json). No Astro: src="/reference/aior-demo-testimonial.html/images/img-XXX.ext"
 
 Astro + Tailwind. HTML semântico e responsivo.
 
---- PROMPT 12/15: Construção página 12 ---
-Com base em public/reference/2025-digilink-html-page-service-details.html/, crie a página em sites/digilinks/src/pages/.
+--- PROMPT 12/16: Construção página 12 ---
+Com base em public/reference/aior-demo-pricing.html/, crie a página em sites/techai/src/pages/.
 
 INSTRUÇÕES: Manter a estrutura original da referência, apenas traduzir e adaptar ao briefing. Manter as cores da referência. Todo conteúdo em português. Manter 100% fiel à referência, apenas trocar textos.
 
 ESTA PÁGINA: Seguir a referência.
 
 Use page.html e styles.css como base.
-IMAGENS: Use public/reference/2025-digilink-html-page-service-details.html/images/ (images.json). No Astro: src="/reference/2025-digilink-html-page-service-details.html/images/img-XXX.ext"
+IMAGENS: Use public/reference/aior-demo-pricing.html/images/ (images.json). No Astro: src="/reference/aior-demo-pricing.html/images/img-XXX.ext"
 
 Astro + Tailwind. HTML semântico e responsivo.
 
---- PROMPT 13/15: Construção página 13 ---
-Com base em public/reference/2025-digilink-html-news-grid.html/, crie a página em sites/digilinks/src/pages/.
+--- PROMPT 13/16: Construção página 13 ---
+Com base em public/reference/aior-demo-contact.html/, crie a página em sites/techai/src/pages/.
 
 INSTRUÇÕES: Manter a estrutura original da referência, apenas traduzir e adaptar ao briefing. Manter as cores da referência. Todo conteúdo em português. Manter 100% fiel à referência, apenas trocar textos.
 
 ESTA PÁGINA: Seguir a referência.
 
 Use page.html e styles.css como base.
-IMAGENS: Use public/reference/2025-digilink-html-news-grid.html/images/ (images.json). No Astro: src="/reference/2025-digilink-html-news-grid.html/images/img-XXX.ext"
+IMAGENS: Use public/reference/aior-demo-contact.html/images/ (images.json). No Astro: src="/reference/aior-demo-contact.html/images/img-XXX.ext"
 
 Astro + Tailwind. HTML semântico e responsivo.
 
---- PROMPT 14/15: Construção página 14 ---
-Com base em public/reference/2025-digilink-html-news-details.html/, crie a página em sites/digilinks/src/pages/.
+--- PROMPT 14/16: Construção página 14 ---
+Com base em public/reference/aior-demo-error.html/, crie a página em sites/techai/src/pages/.
 
 INSTRUÇÕES: Manter a estrutura original da referência, apenas traduzir e adaptar ao briefing. Manter as cores da referência. Todo conteúdo em português. Manter 100% fiel à referência, apenas trocar textos.
 
 ESTA PÁGINA: Seguir a referência.
 
 Use page.html e styles.css como base.
-IMAGENS: Use public/reference/2025-digilink-html-news-details.html/images/ (images.json). No Astro: src="/reference/2025-digilink-html-news-details.html/images/img-XXX.ext"
+IMAGENS: Use public/reference/aior-demo-error.html/images/ (images.json). No Astro: src="/reference/aior-demo-error.html/images/img-XXX.ext"
 
 Astro + Tailwind. HTML semântico e responsivo.
 
---- PROMPT 15/15: Construção página 15 ---
-Com base em public/reference/2025-digilink-html-page-contact.html/, crie a página em sites/digilinks/src/pages/.
+--- PROMPT 15/16: Construção página 15 ---
+Com base em public/reference/aior-demo-blog.html/, crie a página em sites/techai/src/pages/.
 
 INSTRUÇÕES: Manter a estrutura original da referência, apenas traduzir e adaptar ao briefing. Manter as cores da referência. Todo conteúdo em português. Manter 100% fiel à referência, apenas trocar textos.
 
 ESTA PÁGINA: Seguir a referência.
 
 Use page.html e styles.css como base.
-IMAGENS: Use public/reference/2025-digilink-html-page-contact.html/images/ (images.json). No Astro: src="/reference/2025-digilink-html-page-contact.html/images/img-XXX.ext"
+IMAGENS: Use public/reference/aior-demo-blog.html/images/ (images.json). No Astro: src="/reference/aior-demo-blog.html/images/img-XXX.ext"
+
+Astro + Tailwind. HTML semântico e responsivo.
+
+--- PROMPT 16/16: Construção página 16 ---
+Com base em public/reference/aior-demo-blog-details.html/, crie a página em sites/techai/src/pages/.
+
+INSTRUÇÕES: Manter a estrutura original da referência, apenas traduzir e adaptar ao briefing. Manter as cores da referência. Todo conteúdo em português. Manter 100% fiel à referência, apenas trocar textos.
+
+ESTA PÁGINA: Seguir a referência.
+
+Use page.html e styles.css como base.
+IMAGENS: Use public/reference/aior-demo-blog-details.html/images/ (images.json). No Astro: src="/reference/aior-demo-blog-details.html/images/img-XXX.ext"
 
 Astro + Tailwind. HTML semântico e responsivo.
 
@@ -234,6 +246,6 @@ Revise todos os links do site:
 - Garanta que formulários e CTAs levam a rotas válidas
 
 --- PROMPT: Validação final ---
-Execute `cd sites/digilinks && bun run build` e corrija erros.
+Execute `cd sites/techai && bun run build` e corrija erros.
 Confira: páginas responsivas, navegação funcionando, sem links quebrados.
 Site pronto e funcional.

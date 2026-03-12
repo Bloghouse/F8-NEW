@@ -555,7 +555,7 @@ try {
         try {
           const projectRoot = join(__dirname, '..');
           const sitesDir = join(projectRoot, 'sites');
-          const list: { name: string; slug: string; path: string; createdAt: string; displayName?: string; deployUrl?: string; remoteUrl?: string; branch: string; hasBuild?: boolean }[] = [];
+          const list: { name: string; slug: string; path: string; createdAt: string; displayName?: string; deployUrl?: string; remoteUrl?: string; branch: string; hasBuild?: boolean; outputMode?: string }[] = [];
           if (existsSync(sitesDir)) {
             const entries = readdirSync(sitesDir, { withFileTypes: true });
             for (const e of entries) {
@@ -566,6 +566,7 @@ try {
                 let deployUrl = '';
                 let remoteUrl = '';
                 let branch = 'main';
+                let outputMode = 'site';
                 try {
                   if (existsSync(projectPath)) {
                     const meta = JSON.parse(readFileSync(projectPath, 'utf-8'));
@@ -574,12 +575,13 @@ try {
                     deployUrl = meta.deployUrl || '';
                     remoteUrl = meta.remoteUrl || '';
                     branch = meta.branch || 'main';
+                    outputMode = meta.outputMode === 'theme' ? 'theme' : 'site';
                   }
                   const stat = statSync(join(sitesDir, e.name));
                   if (!createdAt) createdAt = stat.mtime?.toISOString?.() || new Date().toISOString();
                 } catch (_) {}
                 const hasBuild = existsSync(join(sitesDir, e.name, 'dist'));
-                list.push({ name: e.name, slug: e.name, path: `sites/${e.name}`, createdAt, displayName, deployUrl: deployUrl || undefined, remoteUrl: remoteUrl || undefined, branch, hasBuild });
+                list.push({ name: e.name, slug: e.name, path: `sites/${e.name}`, createdAt, displayName, deployUrl: deployUrl || undefined, remoteUrl: remoteUrl || undefined, branch, hasBuild, outputMode });
               }
             }
             list.sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
@@ -617,6 +619,59 @@ try {
           return new Response(JSON.stringify({ success: true, deployUrl: meta.deployUrl }), { headers: { 'Content-Type': 'application/json', ...CORS } });
         } catch (e) {
           console.error('\x1b[31m✖ Erro ao atualizar deployUrl:\x1b[0m', e);
+          return new Response(JSON.stringify({ error: (e as Error).message }), { status: 500, headers: { 'Content-Type': 'application/json', ...CORS } });
+        }
+      }
+
+      const exportThemeMatch = pathname.match(/^\/api\/sites\/([^/]+)\/export-theme$/);
+      if (exportThemeMatch && req.method === 'POST') {
+        const [, slug] = exportThemeMatch;
+        if (!slug || slug.includes('..')) {
+          return new Response(JSON.stringify({ error: 'slug obrigatório' }), { status: 400, headers: { 'Content-Type': 'application/json', ...CORS } });
+        }
+        const projectRoot = join(__dirname, '..');
+        const siteDir = join(projectRoot, 'sites', slug);
+        const projectPath = join(siteDir, 'project.json');
+        if (!existsSync(siteDir)) {
+          return new Response(JSON.stringify({ error: 'Site não encontrado' }), { status: 404, headers: { 'Content-Type': 'application/json', ...CORS } });
+        }
+        try {
+          const { exportThemeAsCnx } = await import('./export-theme-cnx.ts');
+          const { buffer } = await exportThemeAsCnx(slug);
+          return new Response(buffer, {
+            headers: {
+              'Content-Type': 'application/zip',
+              'Content-Disposition': `attachment; filename="tema-${slug}.zip"`,
+              'Content-Length': String(buffer.length),
+              ...CORS,
+            },
+          });
+        } catch (e) {
+          console.error('\x1b[31m✖ Erro ao exportar tema:\x1b[0m', e);
+          return new Response(JSON.stringify({ error: (e as Error).message }), { status: 500, headers: { 'Content-Type': 'application/json', ...CORS } });
+        }
+      }
+
+      const outputModeMatch = pathname.match(/^\/api\/sites\/([^/]+)\/output-mode$/);
+      if (outputModeMatch && req.method === 'POST') {
+        const [, slug] = outputModeMatch;
+        try {
+          const body = (await req.json()) as { outputMode?: string };
+          const outputMode = body?.outputMode === 'theme' ? 'theme' : 'site';
+          if (!slug || slug.includes('..')) {
+            return new Response(JSON.stringify({ error: 'slug obrigatório' }), { status: 400, headers: { 'Content-Type': 'application/json', ...CORS } });
+          }
+          const projectRoot = join(__dirname, '..');
+          const projectPath = join(projectRoot, 'sites', slug, 'project.json');
+          if (!existsSync(projectPath)) {
+            return new Response(JSON.stringify({ error: 'Site não encontrado' }), { status: 404, headers: { 'Content-Type': 'application/json', ...CORS } });
+          }
+          const meta = JSON.parse(readFileSync(projectPath, 'utf-8'));
+          meta.outputMode = outputMode;
+          writeFileSync(projectPath, JSON.stringify(meta, null, 2), 'utf-8');
+          return new Response(JSON.stringify({ success: true, outputMode }), { headers: { 'Content-Type': 'application/json', ...CORS } });
+        } catch (e) {
+          console.error('\x1b[31m✖ Erro ao atualizar outputMode:\x1b[0m', e);
           return new Response(JSON.stringify({ error: (e as Error).message }), { status: 500, headers: { 'Content-Type': 'application/json', ...CORS } });
         }
       }

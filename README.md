@@ -1,11 +1,13 @@
-# Boilerplate 8links - Sites PBN em Astro
+# f8 – Boilerplate 8links
 
-Template Astro para criar sites PBN compatíveis com a plataforma 8links. Estrutura de blog com Content Collections, pronto para deploy na Vercel.
+Template Astro para criar sites PBN compatíveis com a plataforma 8links. Inclui sites de exemplo em `sites/` (techai, 8links-test, 8links-test2) prontos para customização e deploy na Vercel.
 
 ## Estrutura
 
 ```
 f8/
+├── sites/               # Sites de exemplo (techai, 8links-test, etc.)
+│   └── techai/          # Site completo com blog, SEO, WhatsApp
 ├── public/
 ├── src/
 │   ├── components/      # Header, Footer, PostCard
@@ -26,13 +28,26 @@ f8/
 
 ## Início rápido
 
+### Hub (capture, wizard)
+
 ```bash
 cd f8
-bun install   # ou npm install
-bun run dev   # ou npm run dev
+bun install
+bun run dev   # ou bun run dev:full
 ```
 
 Acesse http://localhost:4321
+
+### Rodar um site (ex: techai)
+
+```bash
+cd f8/sites/techai
+bun install
+bun run dev
+bun run build   # build de produção
+```
+
+> **Referências:** As imagens de referência ficam em `sites/techai/public/reference/`. Use a captura (`/capture`) ou faça upload de tema para gerá-las.
 
 ## Criar um novo site a partir do boilerplate
 

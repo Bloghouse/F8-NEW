@@ -142,6 +142,27 @@ import WizardLayout from '../layouts/WizardLayout.astro';
       <p class="text-white/50 text-sm mb-6">Como adaptar a referência ao seu projeto.</p>
 
       <div class="space-y-6 mb-8">
+        <!-- Site vs Tema - escolha do tipo de saída -->
+        <fieldset class="p-5 rounded-xl bg-[var(--color-bg-elevated)] border border-[var(--color-border)]">
+          <legend class="text-sm font-medium text-white/90 mb-4">O que você está criando?</legend>
+          <div class="flex flex-wrap gap-4">
+            <label class="flex items-center gap-3 cursor-pointer p-3 rounded-lg border-2 border-transparent hover:border-[var(--color-accent)]/30 hover:bg-white/5 transition-colors has-[:checked]:border-[var(--color-accent)] has-[:checked]:bg-[var(--color-accent)]/10">
+              <input type="radio" name="output-mode" value="site" class="rounded-full accent-[var(--color-accent)]" checked />
+              <div>
+                <span class="text-white/90 font-medium block">Site</span>
+                <span class="text-white/50 text-xs">Site standalone. Deploy direto na Vercel.</span>
+              </div>
+            </label>
+            <label class="flex items-center gap-3 cursor-pointer p-3 rounded-lg border-2 border-transparent hover:border-[var(--color-accent)]/30 hover:bg-white/5 transition-colors has-[:checked]:border-[var(--color-accent)] has-[:checked]:bg-[var(--color-accent)]/10">
+              <input type="radio" name="output-mode" value="theme" class="rounded-full accent-[var(--color-accent)]" />
+              <div>
+                <span class="text-white/90 font-medium block">Tema CNX</span>
+                <span class="text-white/50 text-xs">Editável no CNX. Baixe e importe como tema.</span>
+              </div>
+            </label>
+          </div>
+        </fieldset>
+
         <fieldset class="p-5 rounded-xl bg-[var(--color-bg-elevated)] border border-[var(--color-border)]">
           <legend class="text-sm font-medium text-white/90 mb-4">Replicar 100% do template</legend>
           <div class="grid sm:grid-cols-2 gap-3">
@@ -404,6 +425,7 @@ import WizardLayout from '../layouts/WizardLayout.astro';
               <div class="flex flex-wrap gap-2 mb-4">
                 ${hasBuild ? `<a href="${previewUrl}" target="_blank" rel="noopener" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-[var(--color-accent)]/20 text-[var(--color-accent)] hover:bg-[var(--color-accent)]/30 text-xs font-medium transition-colors">Preview</a>` : `<button type="button" data-build data-slug="${slug}" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-amber-500/20 text-amber-400 hover:bg-amber-500/30 text-xs font-medium transition-colors">Construir</button>`}
                 ${deployUrl ? `<a href="${deployUrl}" target="_blank" rel="noopener" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-[var(--color-border)] text-white/80 hover:bg-white/5 text-xs font-medium transition-colors">Abrir site ↗</a>` : ''}
+                <button type="button" data-export-theme data-slug="${slug}" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 text-xs font-medium transition-colors" title="Baixar pacote do tema para importar no CNX">Baixar tema (ZIP)</button>
               </div>
               <details class="group border-t border-[var(--color-border)] pt-3" data-site-details ${!s.deployUrl ? 'open' : ''}>
                 <summary class="text-white/70 text-sm cursor-pointer hover:text-white select-none">▸ Git e Deploy</summary>
@@ -547,6 +569,35 @@ import WizardLayout from '../layouts/WizardLayout.astro';
                 console.error('\x1b[31m✖ Erro ao construir:\x1b[0m', e);
                 btn.textContent = '✖ Erro';
                 setTimeout(() => { btn.textContent = origText; btn.disabled = false; }, 2000);
+              }
+            });
+          });
+          listEl.querySelectorAll('[data-export-theme]').forEach((btn) => {
+            btn.addEventListener('click', async () => {
+              const slug = btn.getAttribute('data-slug');
+              if (!slug) return;
+              const origText = btn.textContent;
+              btn.textContent = 'Gerando...';
+              btn.disabled = true;
+              try {
+                const res = await fetch(`${apiUrl}/api/sites/${slug}/export-theme`, { method: 'POST' });
+                if (!res.ok) {
+                  const data = await res.json().catch(() => ({}));
+                  throw new Error(data.error || 'Erro ao exportar');
+                }
+                const blob = await res.blob();
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = `tema-${slug}.zip`;
+                a.click();
+                URL.revokeObjectURL(a.href);
+                btn.textContent = '✓ Baixado';
+                setTimeout(() => { btn.textContent = origText; btn.disabled = false; }, 2000);
+              } catch (e) {
+                console.error('\x1b[31m✖ Erro ao exportar tema:\x1b[0m', e);
+                alert('✖ ' + (e instanceof Error ? e.message : 'Erro ao exportar tema'));
+                btn.textContent = origText;
+                btn.disabled = false;
               }
             });
           });
@@ -811,7 +862,7 @@ import WizardLayout from '../layouts/WizardLayout.astro';
       showStep(2);
     });
 
-    document.getElementById('go-step-3')?.addEventListener('click', () => {
+    document.getElementById('go-step-3')?.addEventListener('click', async () => {
       const textareas = document.querySelectorAll('#pages-describe textarea[data-slug]');
       pageDescriptions = {};
       textareas.forEach((ta) => {
@@ -821,19 +872,45 @@ import WizardLayout from '../layouts/WizardLayout.astro';
 
       const opts = Array.from(document.querySelectorAll('input[name="briefing-opt"]:checked')).map((c) => c.value);
       const briefingText = document.getElementById('briefing-text')?.value?.trim() || '';
+      const outputMode = (document.querySelector('input[name="output-mode"]:checked')?.value || 'site');
 
       const promptsList = document.getElementById('prompts-list');
       if (!promptsList) return;
 
       const slug = localStorage.getItem(STORAGE_KEY) || slugify(document.getElementById('current-project-name')?.textContent || 'site');
+
+      // Salvar outputMode no project.json
+      try {
+        await fetch(`${apiUrl}/api/sites/${slug}/output-mode`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ outputMode }),
+        });
+      } catch (_) {}
       const pagePrompts = capturedPages.map((p) => buildPagePrompt(p, opts, briefingText, pageDescriptions[p.slug] || '', slug));
       const fullBatch = buildFullBatch(pagePrompts, slug);
 
+      window.__outputMode = outputMode;
+
+      const themeNotice = outputMode === 'theme'
+        ? `<div class="mb-6 p-4 rounded-xl bg-blue-500/10 border border-blue-500/30">
+          <p class="text-blue-300 text-sm font-medium mb-2">🎨 Projeto Tema CNX</p>
+          <p class="text-blue-200/80 text-xs">Após rodar os prompts e construir o site, volte ao hub e use <strong>Exportar tema CNX</strong> para baixar o pacote e importar no CNX.</p>
+        </div>`
+        : '';
+
       promptsList.innerHTML = `
-        <div class="mb-6 p-4 rounded-xl bg-[var(--color-bg-elevated)] border border-[var(--color-border)]">
-          <h3 class="text-sm font-medium text-white/90 mb-2">Bateria completa (${fullBatch.split('--- ').length - 1} blocos)</h3>
-          <p class="text-white/50 text-xs">Construção → SEO → Links → Menu → Mobile → Imagens → Revisão → Validação</p>
+        <div class="mb-6 p-5 rounded-xl bg-[var(--color-bg-elevated)] border border-[var(--color-border)]">
+          <h3 class="text-base font-semibold text-white mb-3">O que fazer agora</h3>
+          <ol class="list-decimal list-inside space-y-2 text-white/80 text-sm">
+            <li><strong class="text-white">Copie o prompt inicial</strong> (botão abaixo)</li>
+            <li><strong class="text-white">Cole no Cursor</strong> (Ctrl+V) na conversa</li>
+            <li><strong class="text-white">Aguarde cada etapa</strong> antes da próxima — rode em sequência</li>
+            <li><strong class="text-white">Salve os prompts</strong> quando terminar — ficam em prompts-gerados.md</li>
+          </ol>
+          <p class="text-white/50 text-xs mt-4">Bateria: ${fullBatch.split('--- ').length - 1} blocos (Construção → SEO → Links → Menu → Mobile → Imagens → Revisão → Validação)</p>
         </div>
+        ${themeNotice}
       ` + capturedPages.map((p, i) => `
         <details class="group rounded-xl bg-[var(--color-bg-elevated)] border border-[var(--color-border)] overflow-hidden">
           <summary class="px-4 py-3 cursor-pointer flex items-center justify-between text-sm font-medium text-white hover:bg-white/5">

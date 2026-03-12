@@ -30,6 +30,10 @@ npm-debug.log*
 # .git de cada site (cada site pode ter seu repo para deploy separado)
 sites/*/.git/
 
+# Export tema CNX (temp + zip gerados)
+.export-theme-temp/
+tema-*.zip
+
 # Referências capturadas (screenshots, HTML, CSS)
 public/reference/
 **/public/reference/
