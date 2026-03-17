@@ -39,7 +39,7 @@ function loadCredentials(): { githubToken?: string; vercelToken?: string } {
       if (data.githubToken) cred.githubToken = data.githubToken;
       if (data.vercelToken) cred.vercelToken = data.vercelToken;
     }
-  } catch (_) {}
+  } catch (_) { }
   if (!cred.githubToken) cred.githubToken = process.env.GITHUB_TOKEN;
   if (!cred.vercelToken) cred.vercelToken = process.env.VERCEL_TOKEN;
   return cred;
@@ -254,7 +254,7 @@ async function capturePage(
         try {
           const resolved = new URL(m[1], base).href;
           if (!resolved.startsWith('data:') && !resolved.startsWith('blob:')) urls.add(resolved);
-        } catch (_) {}
+        } catch (_) { }
       }
     });
     return Array.from(urls);
@@ -295,7 +295,7 @@ async function capturePage(
         if (sheet.href) result.external.push(sheet.href);
         else if (sheet.ownerNode instanceof HTMLStyleElement)
           result.inline.push(sheet.ownerNode.textContent || '');
-      } catch (_) {}
+      } catch (_) { }
     }
     for (const style of document.querySelectorAll('style')) {
       const t = (style as HTMLStyleElement).textContent || '';
@@ -431,7 +431,7 @@ try {
             if (existsSync(CREDENTIALS_PATH)) {
               try {
                 existing = JSON.parse(readFileSync(CREDENTIALS_PATH, 'utf-8'));
-              } catch (_) {}
+              } catch (_) { }
             }
             const merged = { ...existing, ...cred };
             if (!merged.githubToken) delete merged.githubToken;
@@ -579,7 +579,7 @@ try {
                   }
                   const stat = statSync(join(sitesDir, e.name));
                   if (!createdAt) createdAt = stat.mtime?.toISOString?.() || new Date().toISOString();
-                } catch (_) {}
+                } catch (_) { }
                 const hasBuild = existsSync(join(sitesDir, e.name, 'dist'));
                 list.push({ name: e.name, slug: e.name, path: `sites/${e.name}`, createdAt, displayName, deployUrl: deployUrl || undefined, remoteUrl: remoteUrl || undefined, branch, hasBuild, outputMode });
               }
@@ -855,6 +855,29 @@ try {
           JSON.stringify({ slug, images: manifest, hasImages: manifest.length > 0 }),
           { headers: { 'Content-Type': 'application/json', ...CORS } }
         );
+      }
+
+      if (pathname === '/api/reference-file' && req.method === 'GET') {
+        const slug = url.searchParams.get('slug');
+        const file = url.searchParams.get('file');
+        if (!slug || !file || slug.includes('..') || file.includes('..')) {
+          return new Response(JSON.stringify({ error: 'slug e file obrigatórios' }), {
+            status: 400,
+            headers: { 'Content-Type': 'application/json', ...CORS },
+          });
+        }
+        const filePath = join(REFERENCE_BASE, slug, file);
+        if (!existsSync(filePath)) {
+          return new Response(JSON.stringify({ error: 'Arquivo não encontrado' }), {
+            status: 404,
+            headers: { 'Content-Type': 'application/json', ...CORS },
+          });
+        }
+        const content = readFileSync(filePath, 'utf-8');
+        const mime = file.endsWith('.css') ? 'text/css' : 'text/html';
+        return new Response(content, {
+          headers: { 'Content-Type': mime, ...CORS },
+        });
       }
 
       if (pathname === '/api/download-images' && req.method === 'POST') {
