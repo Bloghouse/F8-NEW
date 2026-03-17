@@ -1,0 +1,3 @@
+[deploy]
+startCommand = "bun run scripts/capture-server.ts"
+healthcheckPath = "/health"
