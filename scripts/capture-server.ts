@@ -379,7 +379,7 @@ async function capture(urls: string[]): Promise<{ pages: PageResult[] }> {
   return { pages };
 }
 
-const PORT = parseInt(process.env.CAPTURE_PORT ?? '3001', 10);
+const PORT = parseInt(process.env.PORT ?? process.env.CAPTURE_PORT ?? '3001', 10);
 const CORS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
